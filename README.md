@@ -6,7 +6,8 @@
 
 Instead of memorizing vocabulary traditionally, EngJoy transforms learning into a fun experience through two interactive mini-games:
 
-- 🎮 **Word Search** — find hidden words in a dynamic character grid using hints  
+- 🎮 **Word Search** — find hidden words in a dynamic character grid using hints
+![image alt](https://github.com/workwithtuongvy/EngJoy/blob/4a29a1d38cdd90e2344d92aff62fa45aad66a104/word_search.png)
 - 🃏 **Flip Cards** — match word–meaning pairs to improve memorization through repetition
 
 EngJoy also includes a **community-driven ecosystem** where users can create, explore, and save vocabulary sets shared by others.
