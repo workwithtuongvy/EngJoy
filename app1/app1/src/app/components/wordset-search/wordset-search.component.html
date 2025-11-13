@@ -1,0 +1,81 @@
+<app-header></app-header>
+<div class="d-flex">
+  <app-side-bar></app-side-bar>
+  <div class="flex-grow-1 w-100">
+    <div class="main-content flex-grow-1 d-flex flex-column">
+      <div class="flex-grow-1 p-4" style="background-color: #0C1033;">
+        <!-- Tiêu đề -->
+        <div class="section-title-with-button">
+          <span>Results for "{{ searchKeyword }}"</span>
+        </div>
+
+        <!-- Grid các bộ từ -->
+        <div class="vocab-grid scroll-x">
+          <div class="vocab-card" *ngFor="let set of visibleVocabSets; let i = index">
+            <div class="card-image"></div>
+            <div class="card-main">
+              <div class="avatar-container">
+                <div class="avatar"
+                     [style.background-image]="'url(assets/useric.png)'"
+                     [routerLink]="['/wordset', set.word_set_id]"></div>
+                <div class="saved-count">{{ set.savedCount }} saved</div>
+              </div>
+              <div class="right-info">
+                <div class="top-row">
+                  <div class="card-title-wrapper">
+                    <div class="card-title"
+                         (click)="openPopup(set.word_set_id!)">
+                      {{ set.title }}
+                    </div>
+                  
+                    <!-- Popup sát dưới title -->
+                    <app-word-set-detail-popup
+                      *ngIf="selectedWordSetId != null && selectedWordSetId === set.word_set_id"
+                      [word_set_id]="selectedWordSetId!"
+                      [showReportButton]="true"
+                      (closed)="onPopupClosed()">
+                    </app-word-set-detail-popup>
+                  </div>
+                  
+                  
+                  <div class="favorite-icon"
+                  [ngClass]="{
+                      'bi': true,
+                      'bi-heart': !isSaved(set.word_set_id!),
+                      'bi-heart-fill': isSaved(set.word_set_id!),
+                      'filled': isSaved(set.word_set_id!)
+                  }"
+                  (click)="toggleFavorite(i)">
+                </div>
+                </div>
+                <div class="bottom-row">
+                  <div class="card-info left-info">
+                    <a class="username"
+                          style="cursor: pointer; text-decoration: underline;"
+                          [routerLink]="['/wordset-search']"
+                          [queryParams]="{ q: set.username }">
+                      {{ set.username }}
+                    </a>
+                    <span class="terms">{{ set.termCount }} terms</span>
+                  </div>
+                  <div class="dropdown-wrapper" #dropdownWrapper>
+                    <button class="play-button" (click)="toggleDropdown(i, $event)">Game On ▼</button>
+                    <div class="dropdown-menu game-dropdown" *ngIf="activeDropdownIndex === i">
+                      <button [routerLink]="['/wordsearchgame', set.word_set_id!]">Word Search</button>
+                      <button [routerLink]="['/flipcardgame', set.word_set_id!]">Flip Card</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Nút See More -->
+        <div class="see-more">
+          <button *ngIf="visibleCount < filteredVocabSets.length" (click)="showMore()">See more</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

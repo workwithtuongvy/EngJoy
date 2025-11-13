@@ -1,0 +1,69 @@
+<div class="register-container">
+    <div class="register-box">
+      <h2>Create Account</h2>
+      <p class="subtitle">Please fill in your information to create an account</p>
+  
+      <!-- Thông báo -->
+      <div *ngIf="notification.show"
+           [class]="notification.isError ? 'notification error' : 'notification success'"
+           role="alert">
+        {{ notification.message }}
+      </div>
+  
+      <!-- Username -->
+      <div class="mb-3">
+        <input type="text" class="form-control"
+               [(ngModel)]="username"
+               placeholder="Username"
+               (input)="validateForm()" />
+        <div class="error-message" [class.invisible]="!errorUsername">
+          {{ errorUsername || '\u00A0' }}
+        </div>
+      </div>
+  
+      <!-- Email -->
+      <div class="mb-3">
+        <input type="email" class="form-control"
+               [(ngModel)]="email"
+               placeholder="Email"
+               (input)="validateForm()" />
+        <div class="error-message" [class.invisible]="!errorEmail">
+          {{ errorEmail || '\u00A0' }}
+        </div>
+      </div>
+  
+      <!-- Password -->
+      <div class="mb-3">
+        <input type="password" class="form-control"
+               [(ngModel)]="password"
+               placeholder="Password"
+               (input)="validateForm()" />
+        <div class="error-message" [class.invisible]="!errorPassword">
+          {{ errorPassword || '\u00A0' }}
+        </div>
+      </div>
+  
+      <!-- Confirm Password -->
+      <div class="mb-3">
+        <input type="password" class="form-control"
+               [(ngModel)]="confirmPassword"
+               placeholder="Confirm Password"
+               (input)="validateForm()" />
+        <div class="error-message" [class.invisible]="!errorConfirm">
+          {{ errorConfirm || '\u00A0' }}
+        </div>
+      </div>
+  
+      <!-- Nút Đăng ký -->
+      <button class="btn btn-primary w-100"
+              (click)="onRegister()"
+              [disabled]="isSubmitting || errorUsername || errorEmail || errorPassword || errorConfirm">
+        {{ isSubmitting ? 'Creating Account...' : 'Create Account' }}
+      </button>
+  
+      <p class="login-text mt-3">
+        Already have an account? <a routerLink="/login">Sign in</a>
+      </p>
+    </div>
+  </div>
+  

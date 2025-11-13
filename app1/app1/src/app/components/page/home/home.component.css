@@ -1,0 +1,402 @@
+
+
+body {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: sans-serif;
+}
+
+.main-content {
+  flex-grow: 1;
+  background-color: #0C1033;
+  min-width: 0;
+  min-height: 100vh;
+}
+
+.top-section {
+  background-color:#2d2f56;
+  padding-bottom: 20px;
+}
+
+/* ===== Khu vực chọn trò chơi (Word Search, Flip Card) ===== */
+.game-select {
+  padding-bottom: 0; 
+  box-shadow: none;
+}
+.games-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between; /* 2 nút căn giữa - nút mũi tên sang phải */
+} 
+/* Bọc 3 phần nút: 2 nút game + mũi tên */
+.games-option {
+  display: flex;
+  gap:100px;
+  align-items: center;
+  justify-content: center; /* căn giữa toàn bộ phần nút */
+  flex: 1; 
+}
+/* Chỉnh button trò chơi: hình + chữ dưới, căn giữa */
+.game-button {
+  background-color: #393D68;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 30px;
+  cursor: pointer;
+
+  display: flex;
+  flex-direction: column; /* hình trên, chữ dưới */
+  align-items: center;
+  gap: 0.5rem;
+  width: 200px; /* rộng đều */
+  height: 60px;
+}
+
+/* Icon game cỡ lớn, vuông */
+.game-button img {
+  width: 150px;
+  height: 70px;
+  object-fit: contain;
+}
+
+
+.btn-outline-light {
+  flex-shrink: 0;
+}
+
+/* =============== TIÊU ĐỀ ================== */
+.username {
+  font-size: 1.1rem; /* hoặc 16px, 18px tùy theo mong muốn */
+  color: #80caff;
+  font-weight: 600;
+  text-decoration: underline;
+  cursor: pointer;
+}
+.username:hover {
+  color: #ffcc00;
+}
+.section-title-with-button {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  color: white;
+  font-weight: bold;
+  margin-bottom: 1rem;
+}
+
+/* =============== GRID BỘ TỪ =============== */
+.vocab-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1rem;
+  box-sizing: border-box;
+  padding: 1rem;
+}
+
+.vocab-card {
+  background-color: #2D2F56;
+  border-radius: 15px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+}
+
+.card-image {
+  background-color: #1F223D;
+  height: 150px;
+  width: 100%;
+  border-top-left-radius: 15px;
+  border-top-right-radius: 15px;
+
+  background-image: url('/../../assets/logoE.png'); /* ❗ Đường dẫn đúng trong Angular */
+  background-size: contain; /* ✅ Không bị crop như background-size: 100% */
+  background-position: right;
+  background-repeat: no-repeat;
+}
+
+
+.card-main {
+  display: flex;
+  gap: 12px;
+  padding: 1rem;
+  align-items: flex-start;
+}
+
+.avatar-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 60px; 
+}
+
+.avatar {
+  width: 50px;
+  height: 50px;
+  background-color: #888;
+  background-size: cover;         /* lấp đầy */
+  background-position: center;    /* căn giữa ảnh */
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  border: 2px solid white;        /* ✅ thêm border */
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.2); /* tuỳ chọn: đổ bóng nhẹ */
+  cursor: pointer;
+}
+
+
+.saved-count {
+  font-size: 14px;
+  color: #ddd;
+  margin-top: 4px;
+  text-align: center;
+}
+
+.right-info {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+  gap: 8px;
+}
+
+.top-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-title-wrapper {
+  position: relative;
+  display: inline-block;
+
+}
+
+.card-title {
+  font-weight: bold;
+  font-size: 1rem;
+  color: #fff;
+  white-space: nowrap;
+  background-color: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 2px 10px;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  user-select: none;
+}
+/* Hiệu ứng khi hover */
+.card-title:hover {
+  background-color: rgba(255, 255, 255, 0.3);
+  color: #fff;
+  transform: scale(1.02);
+}
+
+/* Hiệu ứng khi click (tạm thời scale nhẹ) */
+.card-title:active {
+  transform: scale(0.97);
+  background-color: rgba(255, 255, 255, 0.25);
+}
+
+.favorite-icon {
+  font-size: 24px;
+  color: transparent;
+  -webkit-text-stroke: 1.5px red;
+  cursor: pointer;
+}
+.favorite-icon.filled {
+  color: red;
+  -webkit-text-stroke: 0; /* tắt viền */
+}
+
+.bottom-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-info {
+  display: flex;
+  flex-direction: column;
+  font-size: 14px;
+  color: #ccc;
+  gap: 2px;
+}
+
+.play-button {
+  background-color: #FF6B61;
+  border: none;
+  border-radius: 30px;
+  padding: 6px 16px;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  min-width: 120px;
+  font-weight: 600;
+}
+
+.dropdown-wrapper {
+  position: relative;
+  display: inline-block;
+
+}
+
+.dropdown-menu,
+.game-dropdown {
+  position: absolute;
+  top: 110%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: linear-gradient(to bottom, #ff6b61, #ffb3ab);
+  border-radius: 16px;
+  padding: 0;
+  min-width: 120px; 
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 1px;
+  z-index: 9999;
+}
+.game-dropdown button {
+  border: none;
+  background: transparent;
+  color: black;
+  font-weight: bold;
+  font-size: 16px;
+  padding: 10px;
+  cursor: pointer;
+  text-align: center;
+  transition: background 0.2s ease;
+}
+
+
+.game-dropdown button:hover {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+
+/* =============== NÚT SEE MORE =============== */
+.see-more {
+  display: flex;
+  justify-content: center;
+  margin-top: 1rem;
+  margin-bottom: 5rem;
+}
+
+.see-more button {
+  background-color: #5a5f97;
+  color: white;              
+  font-family: 'Comic Sans MS', cursive, sans-serif;
+  font-weight: bold;       
+  font-size: 25px;        
+  border-radius: 20px;    
+  padding: 10px 40px;        
+  display: inline-block;
+  letter-spacing: 0.05em;   
+  user-select: none;         
+  cursor: pointer;
+  text-align: center;
+} 
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(12, 16, 51, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.popup-content {
+  background: #1A1F4D;
+  padding: 30px;
+  border-radius: 16px;
+  width: 90%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.popup-content h3 {
+  color: white;
+  text-align: center;
+  margin-bottom: 25px;
+  font-size: 20px;
+  font-weight: 500;
+}
+
+.workspace-button {
+  width: 100%;
+  padding: 12px;
+  border: none;
+  border-radius: 8px;
+  background: #2A2F6D;
+  color: white;
+  font-size: 16px;
+  text-align: left;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.workspace-button:hover {
+  background: #3A3F7D;
+}
+
+.workspace-button.new-workspace {
+  background: #FF6B61;
+  text-align: center;
+  font-weight: 500;
+}
+
+.workspace-button.new-workspace:hover {
+  background: #FF8B81;
+}
+
+.workspace-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Customize scrollbar for workspace list */
+.workspace-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.workspace-list::-webkit-scrollbar-track {
+  background: #1A1F4D;
+}
+
+.workspace-list::-webkit-scrollbar-thumb {
+  background: #2A2F6D;
+  border-radius: 4px;
+}
+
+.workspace-list::-webkit-scrollbar-thumb:hover {
+  background: #3A3F7D;
+}
+
+/* =============== RESPONSIVE =============== */
+@media (max-width: 768px) {
+  .games-wrapper, .games-option {
+    flex-direction: column;
+  }
+  .vocab-grid {
+    grid-template-columns: 1fr;
+  }
+  .card-title {
+    max-width: 100%;
+  }
+  .main-content {
+    padding: 1rem;
+  }
+}
+

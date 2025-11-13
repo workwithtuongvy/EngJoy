@@ -1,0 +1,29 @@
+<div class="modal">
+    <div class="modal-content">
+      <h2>Why are you reporting this "{{ wordSetTitle }}" wordset?</h2>
+  
+      <div class="report-options">
+        <button
+          *ngFor="let option of reportOptions"
+          class="report-option"
+          [class.selected]="selectedReportOption === option"
+          (click)="selectReportOption(option)">
+          {{ option }}
+        </button>
+      </div>
+  
+      <p class="report-warning">
+        *Please be responsible for your report choices, as this may affect the overall spirit of our EngJoy community if false reports are submitted.
+      </p>
+  
+      <div class="modal-actions">
+        <button class="cancel-button" (click)="close()">Cancel</button>
+        <button class="send-button" [disabled]="!selectedReportOption" (click)="submitReport()">Send</button>
+      </div>
+  
+      <div class="success-message" *ngIf="showSuccess">
+        ✅ Report submitted successfully. Thank you for your feedback!
+      </div>
+    </div>
+  </div>
+  

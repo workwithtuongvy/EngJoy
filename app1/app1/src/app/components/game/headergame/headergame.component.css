@@ -1,0 +1,76 @@
+/* Header chia 3 phần */
+.game-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  
+  .left-area, .right-area {
+    flex: 0 0 auto;
+  }
+  
+  .center-area {
+    flex: 1;
+    text-align: center;
+  }
+  
+  /* Logo to rõ */
+  .header-logo-img {
+    width: auto;
+    height: 83px;
+    max-width: 500px;
+    object-fit: contain;
+    display: inline-block;
+  }
+  
+  /* Nút icon tròn nhỏ */
+  .btn-icon {
+    width: 42px;      
+    height: 42px;
+    font-size: 18px; 
+    padding: 0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid white;
+    color: white;
+    background: transparent;
+  }
+  
+  .game-header .small {
+    font-size: 0.85rem;
+    line-height: 1.2;
+  }
+  .text-muted {
+    opacity: 0.6;
+  }
+  
+  /* Khung đếm giờ */
+  .timer-box {
+    background-color: red;
+    padding: 10px 24px;
+    border-radius: 0.75rem;
+    font-weight: bold;
+    font-size: 1.75rem; /* Tăng từ 1.25rem lên */
+  }
+  .game-info {
+    font-family: 'Segoe UI', sans-serif;
+    font-weight: 600;
+    font-size: 1rem;
+    line-height: 1.4;
+    margin-top: 6px;
+    color: white;
+  }
+  
+  .game-label {
+    font-size: clamp(12px, 1.4vw, 18px); /* co giãn hợp lý theo màn hình */
+    font-weight: bold;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #fff;
+    text-shadow: 0 0 4px rgba(0,0,0,0.4);
+
+  }
+  

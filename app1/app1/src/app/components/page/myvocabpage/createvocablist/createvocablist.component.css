@@ -1,0 +1,162 @@
+.d-flex {
+  align-items: stretch;
+}
+
+/* Main content area */
+.game-area {
+  min-height: 100vh;
+}
+
+/* Header row */
+.header-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+/* Icon */
+.vocab-icon {
+  height: 40px;
+}
+
+/* Create button */
+.create-btn {
+  background-color: #3e47f9;
+  color: white;
+  border-radius: 999px;
+  padding: 6px 20px;
+}
+
+/* Card item */
+.card-item {
+  background-color: white;
+  border-radius: 10px;
+  padding: 0.5rem;
+  margin-bottom: 1.5rem;
+}
+
+/* Input fields */
+.custom-input {
+  padding: 4px 10px;
+  font-size: 0.95rem;
+  height: 36px;
+  background-color: #f6f7f9;
+}
+
+/* More card button */
+.more-card-btn {
+  background-color: #d8dafe;
+  border-radius: 999px;
+  color: #333;
+}
+
+/* Drag handle */
+.drag-handle {
+  cursor: grab;
+  font-size: 1.2rem;  
+}
+
+/* Notification */
+.notification {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  padding: 15px 25px;
+  border-radius: 4px;
+  color: white;
+  font-weight: 500;
+  z-index: 1000;
+  animation: slideIn 0.3s ease-out;
+}
+
+.notification.success {
+  background-color: #4CAF50;
+}
+
+.notification.error {
+  background-color: #f44336;
+}
+
+@keyframes slideIn {
+  from {
+    transform: translateX(100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+/* Tag badge */
+.badge-tag {
+  background-color: #d9d9ff;
+  color: #000;
+  border-radius: 20px;
+  padding: 6px 12px;
+  font-weight: 500;
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Close button in tag */
+.badge-tag .btn-close {
+  margin-left: 8px;
+  transform: scale(0.7);
+  color: black;
+}
+
+/* Shared styles */
+.badge {
+  display: inline-flex;
+  align-items: center;
+}
+
+.btn-close {
+  transform: scale(0.7);
+}
+
+/* Purple (tag button) */
+.btn-purple {
+  background-color: #e6b3ff;
+  color: #33004d;
+  font-weight: bold;
+}
+
+/* Pink (dropdown tag) */
+.btn-addtag {
+  background-color: #ffd6ff;
+  color: #000;
+  font-weight: bold;
+}
+/*check box */
+/* Tùy chỉnh màu khi checkbox được tick */
+.form-check-input:checked {
+  background-color: #3e47f9;    /* màu xanh đậm hoặc màu chủ đề của bạn */
+  border-color: #3e47f9;
+}
+
+/* Bo tròn checkbox */
+.form-check-input {
+  border-radius: 6px;
+}
+/* Scroll bar mảnh và nhẹ */
+.dropdown-menu-custom {
+  scrollbar-width: thin;
+  scrollbar-color: #888 #f1f1f1;
+}
+
+.dropdown-menu-custom::-webkit-scrollbar {
+  width: 6px;
+}
+
+.dropdown-menu-custom::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 10px;
+}
+
+.dropdown-menu-custom::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+

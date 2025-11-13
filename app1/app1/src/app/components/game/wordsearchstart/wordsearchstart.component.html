@@ -1,0 +1,49 @@
+<!-- Header ở trên cùng -->
+<app-header></app-header>
+
+<!-- Toàn bộ nội dung chia thành 2 cột: sidebar + game -->
+<div class="d-flex">
+  <!-- Sidebar bên trái -->
+  <app-side-bar></app-side-bar>
+
+  <!-- Phần nội dung game bên phải -->
+  <div id = "maingame" class="flex-grow-1 p-4" style="background-color: #0C1033;">
+    <div class="game-container mx-auto">
+      <app-headergame
+        [gameIconPath]="'assets/game/icwordsearch.png'"
+        [wordSetTitle]="wordSetTitle"
+      ></app-headergame>
+    <!-- Khung chứa các chế độ game -->
+    <div class="game-mode-frame">
+        <img src="assets/game/selectgamemode.png" alt="Select Game Mode" class="title-image" />
+        <div class="mode-button-group">
+            <button class="mode-button"
+                    type="button"
+                    [disabled]="!isAvailable(5)"
+                    [routerLink]="isAvailable(5) ? ['/wordsearchgame', wordSetId, 1] : null">
+              5 <br> Words 
+            </button>
+          
+            <button class="mode-button"
+                    type="button"
+                    [disabled]="!isAvailable(10)"
+                    [routerLink]="isAvailable(10) ? ['/wordsearchgame', wordSetId, 2] : null">
+                10 <br> Words 
+            </button>
+          
+            <button class="mode-button"
+                    type="button"
+                    [disabled]="!isAvailable(15)"
+                    [routerLink]="isAvailable(15) ? ['/wordsearchgame', wordSetId, 3] : null">
+              15 <br> Words 
+            </button>
+          </div>
+          
+      <div class="mode-button-group">
+      </div>
+          
+      
+          
+    </div>
+  </div>
+</div>

@@ -1,0 +1,235 @@
+.profile-container {
+    width: 100%;
+    min-height: 100vh;
+    background-color: #0c1033;
+    color: white;
+    padding: 20px 40px;
+    box-sizing: border-box;
+  }
+  
+  .background-banner {
+    width: 100%;
+    background-color: #b4b8fc;
+    padding: 30px;
+    border-radius: 10px 10px 0 0;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  
+  .avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+  }
+  
+  .avatar-circle {
+    background-color: #ffd4d4;
+    color: #fff;
+    font-weight: bold;
+    border-radius: 50%;
+    width: 100px;
+    height: 100px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    font-size: 16px;
+  }
+  
+  .username-text {
+    font-size: 24px;
+    margin: 0;
+    font-weight: bold;
+    color: black;
+  }
+  
+  .edit-button {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background-color: #252945;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 14px;
+  }
+  
+  .profile-form {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    max-width: 100%;
+  }
+  
+  .form-row {
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  
+  .form-group {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 200px;
+  }
+  
+  .full-width {
+    width: 100%;
+  }
+  
+  input,
+  textarea {
+    padding: 10px;
+    border-radius: 6px;
+    border: none;
+    font-size: 16px;
+    background-color: white;
+    color: black;
+  }
+  
+  .password-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: #e2e2e2;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  
+  .password-wrapper input {
+    flex: 1;
+    border: none;
+    padding: 10px;
+    background: transparent;
+  }
+  
+  .form-group.full-width {
+    margin-bottom: 20px;
+  }
+  
+  .lock-icon,
+  .unlock-icon {
+    padding: 10px;
+    font-size: 18px;
+    color: #555;
+    background-color: transparent;
+    border-left: 1px solid #ccc;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 40px;
+    height: 100%;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+  
+  .lock-icon:hover,
+  .unlock-icon:hover {
+    background-color: #ddd;
+  }
+  
+  /* 4. Responsive cho màn nhỏ */
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+    }
+  
+    .background-banner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  
+    .edit-button {
+      align-self: flex-end;
+    }
+  }
+  .button-group {
+    display: flex;
+    justify-content: flex-start;
+    gap: 20px;
+    margin-top: 20px;
+  }
+  
+  .btn-cancel {
+    background-color: transparent;
+    border: 2px solid #ff8000;
+    color: #ff8000;
+    padding: 8px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .btn-save {
+    background-color: #ff8000;
+    border: none;
+    color: white;
+    padding: 8px 30px;
+    border-radius: 6px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .btn-cancel:hover,
+  .btn-save:hover {
+    opacity: 0.9;
+  }
+  /* 4. Responsive cho màn nhỏ */
+  @media (max-width: 768px) {
+    .form-row {
+      flex-direction: column;
+    }
+  
+    .background-banner {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 10px;
+    }
+  
+    .edit-button {
+      align-self: flex-end;
+    }
+  }
+  /* ⚠️ Cảnh báo lỗi dưới input */
+.error-message {
+  color: #f44336;
+  font-size: 13px;
+  min-height: 18px;
+  margin-top: 0.25rem;
+  margin-bottom: 0.5rem;
+  display: block;
+}
+
+/* 🔔 Thông báo trạng thái */
+.notification {
+  margin-bottom: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  text-align: center;
+  font-size: 14px;
+}
+.notification.success {
+  background-color: #4CAF50;
+  color: white;
+}
+.notification.error {
+  background-color: #f44336;
+  color: white;
+}
+.avatar-circle {
+  background-image: url('/../../assets/useric.png'); /* Ảnh mặc định */
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  border-radius: 50%;
+  width: 100px;
+  height: 100px;
+  border: 3px solid white; /* Thêm viền trắng */
+  box-shadow: 0 0 10px rgba(0,0,0,0.2);
+}

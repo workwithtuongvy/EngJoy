@@ -1,0 +1,5 @@
+[]
+[]
+[]
+{"word_set_id":"4","reason":"Swear words"}
+{"word_set_id":"4","reason":"Political intentions"}

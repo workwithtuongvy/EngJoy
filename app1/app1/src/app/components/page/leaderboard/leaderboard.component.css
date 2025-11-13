@@ -1,0 +1,175 @@
+/* ===== TOP 3 USERS ===== */
+.top-3 {
+	color: #FFF;
+	font-family: 'Inter', sans-serif;
+	display: flex;
+	flex-direction: row;
+	gap: 1rem;
+	margin-top: 0.5rem;
+	padding-top: 0.5rem;
+	justify-content: center;
+}
+
+.top-3 > * {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: end;
+}
+
+.top-3 .username {
+	font-size: 1.2rem;
+	margin-top: 0.3rem;
+}
+
+/* Crown */
+.crown {
+	position: absolute;
+	top: -35px;
+	left: 50%;
+	transform: translateX(-50%);
+	width: 50px;
+	height: auto;
+	z-index: 2;
+}
+
+/* Avatar wrapper */
+.avatar-group {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	position: relative;
+}
+
+/* Top 1 avatar (to nhất) */
+.avatar-group.tier-1 .avatar {
+	width: 110px;
+	height: 110px;
+}
+
+/* Top 2 nhỏ hơn */
+.avatar-group.tier-2 .avatar {
+	width: 95px;
+	height: 95px;
+}
+
+/* Top 3 nhỏ nhất */
+.avatar-group.tier-3 .avatar {
+	width: 85px;
+	height: 85px;
+}
+
+/* Border theo cấp bậc */
+.avatar-group.tier-1 {
+	--avatar-border-color: #FFCA28;
+}
+.avatar-group.tier-2 {
+	--avatar-border-color: #F4F4F4;
+}
+.avatar-group.tier-3 {
+	--avatar-border-color: #FF8228;
+}
+
+.avatar-group .avatar {
+	border-radius: 100%;
+	border: 4px solid var(--avatar-border-color);
+}
+
+/* Rank circle dưới avatar */
+.avatar-group .rank {
+	display: flex;
+	justify-content: center;
+	transform: translateY(-50%);
+}
+
+.avatar-group .rank div {
+	background: var(--avatar-border-color);
+	color: #322244;
+	width: 28px;
+	height: 28px;
+	font-size: 1rem;
+	font-weight: bold;
+	text-align: center;
+	line-height: 28px;
+	border-radius: 100%;
+	border: 3px solid #322244;
+}
+
+/* Dịch Top 2 & 3 lên nhẹ */
+.top-3-user:not(:has(.tier-1)) > div:nth-child(2),
+.top-3-user:not(:has(.tier-1)) > div:nth-child(3) {
+	transform: translateY(-25%);
+}
+
+.avatar-group.tier-1 {
+	transform: none !important;
+}
+
+
+
+/* ===== LEADERBOARD TABLE ===== */
+.leaderboard-table {
+	--thead-border-radius: 0.5rem;
+	--tbody-border-radius: 2rem;
+
+	color: #FFF;
+	width: 100%;
+	text-align: center;
+	font-family: 'Inter', sans-serif;
+	font-size: 1.3rem;
+	border-spacing: 0 1rem;
+	border-collapse: separate;
+	margin-top: 2rem;
+}
+
+.leaderboard-table thead {
+	background: #454B79;
+	border-radius: 1rem;
+}
+.leaderboard-table thead td {
+	padding: 0.3rem 0;
+}
+.leaderboard-table thead td:first-child {
+	border-radius: var(--thead-border-radius) 0 0 var(--thead-border-radius);
+}
+.leaderboard-table thead td:last-child {
+	border-radius: 0 var(--thead-border-radius) var(--thead-border-radius) 0;
+}
+
+
+
+/* Top 3 color override */
+.leaderboard-item.first {
+	background: #FFCA28;
+	color: #312244;
+}
+.leaderboard-item.second {
+	background: #C5E4FB;
+	color: #312244;
+}
+.leaderboard-item.third {
+	background: #ECB48B;
+	color: #312244;
+}
+
+/* Dòng chính mình */
+.leaderboard-item.self {
+	background: #454B79;
+}
+
+/* Hover effect */
+.leaderboard-item:hover {
+	transform: scale(1.02);
+	transition: all 0.2s ease-in-out;
+	box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+	cursor: pointer;
+}
+
+/* Bo góc dòng bảng */
+.leaderboard-table tbody td:first-child {
+	border-radius: var(--tbody-border-radius) 0 0 var(--tbody-border-radius);
+}
+.leaderboard-table tbody td:last-child {
+	border-radius: 0 var(--tbody-border-radius) var(--tbody-border-radius) 0;
+}

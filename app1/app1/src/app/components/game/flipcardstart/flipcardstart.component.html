@@ -1,0 +1,49 @@
+<!-- Header ở trên cùng -->
+<app-header></app-header>
+
+<!-- Toàn bộ nội dung chia thành 2 cột: sidebar + game -->
+<div class="d-flex">
+  <!-- Sidebar bên trái -->
+  <app-side-bar></app-side-bar>
+
+  <!-- Phần nội dung game bên phải -->
+  <div id = "maingame" class="flex-grow-1 p-4" style="background-color: #0C1033;">
+    <div class="game-container mx-auto">
+      <app-headergame
+        [gameIconPath]="'assets/game/icflipcard.png'"
+        [wordSetTitle]="wordSetTitle"
+      ></app-headergame>
+    <!-- Khung chứa các chế độ game -->
+    <div class="game-mode-frame">
+        <img src="assets/game/selectgamemode.png" alt="Select Game Mode" class="title-image" />
+        <div class="mode-button-group">
+            <button class="mode-button"
+                    type="button"
+                    [disabled]="!isAvailable(6)"
+                    [routerLink]="isAvailable(6) ? ['/flipcardgame', wordSetId, 4] : null">
+              3×4
+            </button>
+          
+            <button class="mode-button"
+                    type="button"
+                    [disabled]="!isAvailable(10)"
+                    [routerLink]="isAvailable(10) ? ['/flipcardgame', wordSetId, 5] : null">
+              4×5
+            </button>
+          
+            <button class="mode-button"
+                    type="button"
+                    [disabled]="!isAvailable(15)"
+                    [routerLink]="isAvailable(15) ? ['/flipcardgame', wordSetId, 6] : null">
+              5×6
+            </button>
+          </div>
+          
+      <div class="mode-button-group">
+      </div>
+          
+      
+          
+    </div>
+  </div>
+</div>

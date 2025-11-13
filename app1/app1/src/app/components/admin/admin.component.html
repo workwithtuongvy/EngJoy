@@ -1,0 +1,101 @@
+<div class="d-flex flex-column min-vh-100" style="background-color: #0C1033; color: white; padding: 2rem;">
+    <!-- Header: Logout button -->
+    <div class="d-flex justify-content-end mb-3">
+      <button class="btn btn-outline-light" (click)="onLogout()">Logout</button>
+    </div>
+  
+    <!-- Dashboard section -->
+    <div class="container dashboard">
+      <div class="metric-card-group">
+        <div class="metric-card">
+          <div>
+            <i class="bi bi-person-fill"></i>
+            <h3>{{ metrics.new_player }}</h3>
+          </div>
+          <h6>New Player</h6>
+        </div>
+        <div class="metric-card">
+          <div>
+            <i class="bi bi-joystick"></i>
+            <h3>{{ formattedTimeAvgPlaytime }}</h3>
+          </div>
+          <h6>Avg. Play Time</h6>
+        </div>
+        <div class="metric-card">
+          <div>
+            <i class="bi bi-flag-fill"></i>
+            <h3>{{ metrics.pending_reports }}</h3>
+          </div>
+          <h6>Pending Reports</h6>
+        </div>
+        <div class="metric-card">
+          <div>
+            <i class="bi bi-bar-chart-fill"></i>
+            <h3>{{ metrics.total_wordset }} / {{ metrics.wordset_created_today }}</h3>
+          </div>
+          <h6>Total Wordset /<br>Wordset Created Today</h6>
+        </div>
+      </div>
+  
+      <!-- Report List -->
+      <div class="mt-5">
+        <h3 class="text-white mb-3">Report List</h3>
+        <table class="report-list">
+          <thead>
+            <tr>
+              <th>Wordset Title</th>
+              <th>Reason</th>
+              <th>Date</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of reportList; index as index" class="report-item">
+              <td>
+                <div class="card-title-wrapper">
+                  <div class="card-title"
+                       (click)="openPopup(item.word_set_id!)">
+                    {{ item.wordset_title }}
+                  </div>
+                
+                  <!-- Popup sát dưới title -->
+                  <app-word-set-detail-popup
+                    *ngIf="selectedWordSetId != null && selectedWordSetId === item.word_set_id"
+                    [word_set_id]="selectedWordSetId!"
+                    [showReportButton]="false"
+                    (closed)="onPopupClosed()">
+                  </app-word-set-detail-popup>
+                </div>
+              </td>
+              <td>{{ item.reason }}</td>
+              <td>{{ item.reported_date }}</td>
+              <td>
+                <ng-container [ngSwitch]="item.report_status">
+                  <ng-container *ngSwitchCase="0">
+                    <div class="position-relative w-100">
+                      <button class="btn btn-secondary btn-sm w-100 text-center"
+                              (click)="toggleDropdown(index)">
+                        Pending
+                      </button>
+                      <div class="dropdown-menu show mt-1"
+                           *ngIf="isDropdownOpen[index]"
+                           style="display: block; position: absolute; z-index: 10;">
+                        <a class="dropdown-item" href="#" 
+                           (click)="$event.preventDefault(); updateTicket(index, 1); toggleDropdown(index)">Accept</a>
+                        <a class="dropdown-item" href="#" 
+                           (click)="$event.preventDefault(); updateTicket(index, 2); toggleDropdown(index)">Reject</a>
+                      </div>
+                    </div>
+                  </ng-container>
+  
+                  <span *ngSwitchCase="1" class="btn btn-success btn-sm w-100">Accepted</span>
+                  <span *ngSwitchCase="2" class="btn btn-danger btn-sm w-100">Rejected</span>
+                </ng-container>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  

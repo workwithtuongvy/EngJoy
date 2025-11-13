@@ -1,0 +1,33 @@
+<header class="header d-flex align-items-center justify-content-between px-4 py-2">
+  <!-- Logo -->
+  <div class="d-flex align-items-center" routerLink="/home">
+    <img [src]="logoPath" (error)="handleImageError($event)" alt="logo" class="logo" />
+  </div>
+
+  <!-- Search Box -->
+  <div class="search-container">
+    <input
+      type="text"
+      placeholder="Search"
+      class="search-input"
+      [(ngModel)]="searchQuery"
+      (keyup.enter)="onSearch()"
+    />
+    <button class="search-button" (click)="onSearch()">
+      <i class="bi bi-search"></i>
+    </button>
+  </div>
+
+  <!-- User Actions -->
+  <div class="user-actions d-flex align-items-center gap-3">
+    <button class="icon-button" title="Notifications">
+      <i class="bi bi-bell"></i>
+    </button>
+    <button class="icon-button" routerLink="/userprofile" title="Your Profile">
+      <i class="bi bi-person"></i>
+    </button>
+    <button class="icon-button" (click)="onLogout()" title="Log out">
+      <i class="bi bi-box-arrow-right"></i>
+    </button>
+  </div>
+</header>

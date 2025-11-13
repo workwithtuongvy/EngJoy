@@ -1,0 +1,70 @@
+<!-- Header ở trên cùng -->
+<app-header></app-header>
+
+<!-- Toàn bộ nội dung chia thành 2 cột: sidebar + game -->
+<div class="d-flex">
+  <!-- Sidebar bên trái -->
+  <app-side-bar></app-side-bar>
+
+  <!-- Phần nội dung game bên phải -->
+  <div class="flex-grow-1 p-4" style="background-color: #0C1033;">
+
+    <div class="game-container mx-auto">
+      <div *ngIf="leaderboardEntries.length > 0" class="d-none d-md-flex justify-content-center top-3">
+        <div class="top-3-user">
+          <div class="avatar-group tier-2">
+            <img src="/assets/useric.png" class="avatar" [alt]="leaderboardEntries[1].fullname">
+            <div class="rank">
+              <div>2</div>
+            </div>
+          </div>
+          <div class="username">{{ leaderboardEntries[1]?.fullname }}</div>
+        </div>
+        <div class="top-3-user">
+          <div class="avatar-group tier-1">
+            <img src="/assets/leaderboard/crown.png" class="crown">
+            <img src="/assets/useric.png" class="avatar" [alt]="leaderboardEntries[0].fullname">
+            <div class="rank">
+              <div>1</div>
+            </div>
+          </div>
+          <div class="username">{{ leaderboardEntries[0]?.fullname }}</div>
+        </div>
+        <div class="top-3-user">
+          <div class="avatar-group tier-3">
+            <img src="/assets/useric.png" class="avatar" [alt]="leaderboardEntries[2].fullname">
+            <div class="rank">
+              <div>3</div>
+            </div>
+          </div>
+          <div class="username">{{ leaderboardEntries[2]?.fullname }}</div>
+        </div>
+      </div>
+      <div>
+        <table class="leaderboard-table">
+          <thead>
+            <td>Rank</td>
+            <td>Username</td>
+            <td>Wordset</td>
+          </thead>
+          <tbody>
+            <tr
+              *ngFor="let item of leaderboardEntries"
+              class="leaderboard-item"
+              [ngClass]="{
+                'first': item.rank === 1,
+                'second': item.rank === 2,
+                'third': item.rank === 3,
+                'self': item.user_id === my_user_id,
+              }"
+            >
+              <td>{{ item.rank }}</td>
+              <td>{{ item.fullname }}</td>
+              <td>{{ item.wordsets_count }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

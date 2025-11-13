@@ -1,0 +1,96 @@
+<!-- myvocabspace.component.html -->
+<app-header></app-header>
+<div class="d-flex">
+  <app-side-bar></app-side-bar>
+
+  <div class="flex-grow-1 p-4" style="background-color: #0C1033;">
+    <div class="game-container mx-auto">
+
+      <!-- Title -->
+      <div class="mb-4">
+        <img src="assets/myvocal/ic_yourvocab.png" alt="Your VocabSpace" style="height: 50px;">
+      </div>
+
+      <!-- Filter frame -->
+      <div class="filter-frame d-flex flex-column gap-3 w-100 mb-4">
+        <div class="d-flex w-100 justify-content-between align-items-center flex-wrap gap-3">
+          <!-- Dropdown -->
+          <div class="dropdown position-relative">
+            <button class="btn filter-btn dropdown-toggle" style="user-select: none;"  type="button" (click)="dropdownOpen = !dropdownOpen">
+              {{ selectedFilter === 'created' ? 'Have created' : selectedFilter === 'studied' ? 'Have studied' : 'Favourite' }}
+            </button>
+            <ul class="dropdown-menu show" *ngIf="dropdownOpen" style="display: block; position: absolute;">
+              <li><a class="dropdown-item" (click)="onFilterChange('created'); dropdownOpen = false">Have created</a></li>
+              <li><a class="dropdown-item" (click)="onFilterChange('favourite'); dropdownOpen = false">Favourite</a></li>
+              <li><a class="dropdown-item" (click)="onFilterChange('studied'); dropdownOpen = false">Have studied</a></li>
+            </ul>
+          </div>
+
+          <!-- Search -->
+          <div class="search-bar ms-auto">
+            <input type="text" class="form-control" placeholder="Search your VocabSpace" [(ngModel)]="searchQuery" (input)="onSearch()" />
+            <span class="input-group-text"><i class="bi bi-search"></i></span>
+          </div>
+        </div>
+
+        <!-- Add button -->
+        <div class="d-flex justify-content-end w-100">
+          <button class="btn btn-create text-white px-4 py-2" [routerLink]="'/myvocabspace/create'">
+            Add new VocabSpace <span class="ms-2">+</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- No result -->
+      <div *ngIf="!isLoaded" class="text-white">Loading...</div>
+      <div *ngIf="isLoaded && displayedWordSets.length === 0" class="text-white">No results found.</div>
+
+      <!-- WordSet list -->
+      <div class="wordset-list-frame w-100">
+        <ng-container *ngFor="let set of displayedWordSets; let i = index">
+          <div class="bg-white rounded p-3 mb-3 d-flex justify-content-between align-items-center">
+            <div>
+              <div class="d-flex align-items-center gap-2 mb-1">
+                <strong>{{ set.words?.length || 0 }} terms</strong>
+                |
+                <button class="btn user-btn d-flex align-items-center gap-2" (click)="onUserClick(set.user_id)">
+                  <span class="circle-avatar bg-orange"></span>
+                  <strong>{{ set.username ?? 'User #' + set.user_id }}</strong>
+                </button>
+              </div>
+              <div class="fw-bold">{{ set.title }}</div>
+            </div>
+
+            <div class="d-flex align-items-center gap-2">
+              <i class="bi bi-pencil-square icon-button edit" 
+                *ngIf="set.user_id === userId"
+                role="button" 
+                [routerLink]="['/myvocabspace/edit', set.word_set_id]"></i>
+              <i class="bi bi-trash icon-button delete" role="button" (click)="onDelete(set)"></i>
+              <!-- Game On dropdown -->
+              <div class="position-relative">
+                <div class="dropdown-wrapper">
+                  <button class="play-button" (click)="toggleGameDropdown(i)">
+                    Game On <span>&#x25BE;</span>
+                  </button>
+                  <div *ngIf="activeDropdownIndex === i" class="dropdown-menu game-dropdown" (click)="toggleGameDropdown(i)">
+                    <button [routerLink]="['/wordsearchgame', set.word_set_id]">Word Search</button>
+                    <button [routerLink]="['/flipcardgame', set.word_set_id]">Flip Card</button>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+          </div>
+        </ng-container>
+
+        <!-- ✅ Di chuyển nút ra ngoài vòng lặp -->
+        <div class="text-center mt-3" *ngIf="displayedWordSets.length < filteredWordSets.length">
+          <button class="btn btn-outline-light show-more-btn" (click)="showMore()">Show more</button>
+        </div>
+      </div>
+
+    
+  </div>
+</div>

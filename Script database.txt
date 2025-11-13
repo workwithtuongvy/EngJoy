@@ -1,0 +1,1020 @@
+﻿TABLE MỚI
+CREATE DATABASE IF NOT EXISTS engjoy CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE engjoy;
+
+
+CREATE TABLE IF NOT EXISTS User (
+    user_id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(100) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    full_name VARCHAR(100),
+    phone_number VARCHAR(20),
+    description TEXT,
+    birthdate DATE,
+    registration_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    user_type TINYINT(1) DEFAULT 1 COMMENT '1=user, 2=admin',
+
+
+    
+CHECK (
+       CHAR_LENGTH(password) >= 6 AND
+       password REGEXP '[A-Z]' AND
+       password REGEXP '[0-9]'
+   ),
+
+   CHECK (email LIKE '%@%'),
+
+   CHECK (
+       phone_number IS NULL OR 
+       phone_number REGEXP '^\\+[0-9]{6,}$'
+   ),
+
+   CHECK (user_type IN (1, 2))
+	);
+
+
+CREATE TABLE IF NOT EXISTS Tag (
+    tag_id INT AUTO_INCREMENT PRIMARY KEY,
+    tag_name VARCHAR(255) NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS WordSet (
+    word_set_id INT AUTO_INCREMENT PRIMARY KEY,
+    title VARCHAR(100) DEFAULT 'Untitled',
+    description TEXT,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    last_update DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    is_hidden TINYINT(1) DEFAULT 2,
+    user_id INT NOT NULL,
+
+
+    CHECK (is_hidden IN (1, 2)),
+
+
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+CREATE TABLE IF NOT EXISTS WordSetTag (
+    word_set_id INT NOT NULL,
+    tag_id INT NOT NULL,
+    PRIMARY KEY (word_set_id, tag_id),
+
+
+    FOREIGN KEY (word_set_id) REFERENCES WordSet(word_set_id)
+        ON DELETE CASCADE ON UPDATE CASCADE,
+
+
+    FOREIGN KEY (tag_id) REFERENCES Tag(tag_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+
+
+CREATE TABLE IF NOT EXISTS SavedWordSet (
+    word_set_id INT NOT NULL,
+    user_saved_id INT NOT NULL,
+    saved_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+
+
+    PRIMARY KEY (word_set_id, user_saved_id),
+
+
+    FOREIGN KEY (word_set_id) REFERENCES WordSet(word_set_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+
+
+    FOREIGN KEY (user_saved_id) REFERENCES User(user_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+
+
+
+
+
+CREATE TABLE IF NOT EXISTS Vocabulary (
+    vocab_id INT AUTO_INCREMENT PRIMARY KEY,
+    word_set_id INT NOT NULL,
+    term VARCHAR(50) NOT NULL,
+    definition VARCHAR(50) NOT NULL,
+
+
+    FOREIGN KEY (word_set_id) REFERENCES WordSet(word_set_id)
+        ON DELETE CASCADE ON UPDATE CASCADE
+);
+CREATE TABLE IF NOT EXISTS Game (
+    game_id INT AUTO_INCREMENT PRIMARY KEY,
+    game_name VARCHAR(100) NOT NULL UNIQUE
+);
+CREATE TABLE IF NOT EXISTS GameMode (
+    game_mode_id INT AUTO_INCREMENT PRIMARY KEY,
+    game_id INT NOT NULL,
+    grid_size VARCHAR(100) NOT NULL,
+    min_words INT NOT NULL,
+    max_words INT NOT NULL,
+
+
+    FOREIGN KEY (game_id) REFERENCES Game(game_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+
+CREATE TABLE Leaderboard (
+    leaderboard_id INT DEFAULT 1,
+    user_id INT NOT NULL,
+    word_set_quantity INT DEFAULT 0,
+    created_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (user_id, created_date),
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+ ON DELETE CASCADE
+ ON UPDATE CASCADE
+);
+
+
+
+
+CREATE TABLE IF NOT EXISTS ReportedSet (
+    report_id INT AUTO_INCREMENT PRIMARY KEY,
+    word_set_id INT NOT NULL,
+    report_status TINYINT(1) DEFAULT 0 CHECK (report_status IN (0, 1, 2)),
+    reason TEXT,
+    reported_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+
+
+    FOREIGN KEY (word_set_id) REFERENCES WordSet(word_set_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+CREATE TABLE IF NOT EXISTS GameSession (
+    session_id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    word_set_id INT NOT NULL,
+    play_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    play_duration BIGINT,
+    end_date DATETIME,
+    game_mode_id INT NOT NULL,
+    game_theme TINYINT(1) DEFAULT 1 CHECK (game_theme IN (1, 2)),
+    game_outline TINYINT(1) DEFAULT 1 CHECK (game_outline IN (1, 2)),
+    game_music TINYINT(1) DEFAULT 1 CHECK (game_music IN (1, 2)),
+    score INT DEFAULT 0 CHECK (score >= 0),
+
+
+    FOREIGN KEY (user_id) REFERENCES User(user_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (word_set_id) REFERENCES WordSet(word_set_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE,
+    FOREIGN KEY (game_mode_id) REFERENCES GameMode(game_mode_id)
+        ON DELETE CASCADE
+        ON UPDATE CASCADE
+);
+
+
+
+
+
+
+TRIGGER MỚI
+USE engjoy;
+DELIMITER $$
+
+
+-- Trigger 1: Chỉ user_type = 1 mới được tạo WordSet
+CREATE TRIGGER trg_before_insert_wordset_check_user_type
+BEFORE INSERT ON WordSet
+FOR EACH ROW
+BEGIN
+    DECLARE role TINYINT;
+    SELECT user_type INTO role FROM User WHERE user_id = NEW.user_id;
+    IF role <> 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Only regular users (user_type = 1) can create WordSets.';
+    END IF;
+END$$
+
+
+-- Trigger 2: Tự động cập nhật last_update khi update WordSet
+CREATE TRIGGER trg_before_update_wordset_last_update
+BEFORE UPDATE ON WordSet
+FOR EACH ROW
+BEGIN
+    SET NEW.last_update = NOW();
+END$$
+
+
+
+
+-- Trigger 4: Chỉ user_type = 1 mới được tạo GameSession
+CREATE TRIGGER trg_before_insert_gamesession_check_user
+BEFORE INSERT ON GameSession
+FOR EACH ROW
+BEGIN
+    DECLARE role TINYINT;
+    SELECT user_type INTO role FROM User WHERE user_id = NEW.user_id;
+    IF role <> 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Only regular users (user_type = 1) can create GameSessions.';
+    END IF;
+END$$
+
+
+-- Trigger 5: end_date phải sau play_date khi insert GameSession
+CREATE TRIGGER trg_before_insert_gamesession_check_end_date
+BEFORE INSERT ON GameSession
+FOR EACH ROW
+BEGIN
+    IF NEW.end_date IS NOT NULL AND NEW.end_date <= NEW.play_date THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'end_date must be after play_date';
+    END IF;
+END$$
+
+
+-- Trigger 6: end_date phải sau play_date khi update GameSession
+CREATE TRIGGER trg_before_update_gamesession_check_end_date
+BEFORE UPDATE ON GameSession
+FOR EACH ROW
+BEGIN
+    IF NEW.end_date IS NOT NULL AND NEW.end_date <= NEW.play_date THEN
+        SIGNAL SQLSTATE '45000' SET MESSAGE_TEXT = 'end_date must be after play_date';
+    END IF;
+END$$
+
+
+-- Trigger 7: Cập nhật Leaderboard sau khi insert WordSet
+CREATE TRIGGER trg_after_insert_wordset_update_leaderboard
+AFTER INSERT ON WordSet
+FOR EACH ROW
+BEGIN
+    IF EXISTS (SELECT 1 FROM User WHERE user_id = NEW.user_id AND user_type = 1) THEN
+        UPDATE Leaderboard
+        SET word_set_quantity = (
+            SELECT COUNT(DISTINCT ws.word_set_id)
+            FROM WordSet ws
+            JOIN Vocabulary v ON ws.word_set_id = v.word_set_id
+            WHERE ws.user_id = NEW.user_id
+            GROUP BY ws.user_id
+            HAVING COUNT(v.vocab_id) > 5
+        ),
+        created_date = NOW()
+        WHERE user_id = NEW.user_id;
+    END IF;
+END$$
+
+
+-- Trigger 8: Cập nhật Leaderboard sau khi xóa WordSet
+CREATE TRIGGER trg_after_delete_wordset_update_leaderboard
+AFTER DELETE ON WordSet
+FOR EACH ROW
+BEGIN
+    UPDATE Leaderboard
+    SET word_set_quantity = (
+        SELECT COUNT(DISTINCT ws.word_set_id)
+        FROM WordSet ws
+        JOIN Vocabulary v ON ws.word_set_id = v.word_set_id
+        WHERE ws.user_id = OLD.user_id
+        GROUP BY ws.user_id
+        HAVING COUNT(v.vocab_id) > 5
+    ),
+    created_date = NOW()
+    WHERE user_id = OLD.user_id;
+END$$
+
+
+-- Trigger 9: Cập nhật Leaderboard sau khi thêm Vocabulary
+CREATE TRIGGER trg_after_insert_vocab_update_leaderboard
+AFTER INSERT ON Vocabulary
+FOR EACH ROW
+BEGIN
+    DECLARE owner_id INT;
+    SELECT user_id INTO owner_id FROM WordSet WHERE word_set_id = NEW.word_set_id;
+    UPDATE Leaderboard
+    SET word_set_quantity = (
+        SELECT COUNT(DISTINCT ws.word_set_id)
+        FROM WordSet ws
+        JOIN Vocabulary v ON ws.word_set_id = v.word_set_id
+        WHERE ws.user_id = owner_id
+        GROUP BY ws.user_id
+        HAVING COUNT(v.vocab_id) > 5
+    ),
+    created_date = NOW()
+    WHERE user_id = owner_id;
+END$$
+
+
+-- Trigger 10: Cập nhật Leaderboard sau khi xóa Vocabulary
+CREATE TRIGGER trg_after_delete_vocab_update_leaderboard
+AFTER DELETE ON Vocabulary
+FOR EACH ROW
+BEGIN
+    DECLARE owner_id INT;
+    SELECT user_id INTO owner_id FROM WordSet WHERE word_set_id = OLD.word_set_id;
+    UPDATE Leaderboard
+    SET word_set_quantity = (
+        SELECT COUNT(DISTINCT ws.word_set_id)
+        FROM WordSet ws
+        JOIN Vocabulary v ON ws.word_set_id = v.word_set_id
+        WHERE ws.user_id = owner_id
+        GROUP BY ws.user_id
+        HAVING COUNT(v.vocab_id) > 5
+    ),
+    created_date = NOW()
+    WHERE user_id = owner_id;
+END$$
+
+
+-- Trigger 11: Cập nhật WordSet.is_hidden khi xử lý ReportedSet
+CREATE TRIGGER trg_after_update_reportedset_handle_wordset
+AFTER UPDATE ON ReportedSet
+FOR EACH ROW
+BEGIN
+    IF NEW.report_status IN (1, 2) THEN
+        IF NEW.report_status = 1 THEN
+            UPDATE WordSet SET is_hidden = 1 WHERE word_set_id = NEW.word_set_id;
+        ELSE
+            UPDATE WordSet SET is_hidden = 2 WHERE word_set_id = NEW.word_set_id;
+        END IF;
+    END IF;
+END$$
+
+
+-- Trigger 13: Kiểm tra email admin khi insert
+CREATE TRIGGER trg_before_insert_user_check_admin_email
+BEFORE INSERT ON User
+FOR EACH ROW
+BEGIN
+    IF NEW.user_type = 2 AND NOT NEW.email LIKE '%@engjoy.com' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Admin email must end with @engjoy.com';
+    END IF;
+END$$
+
+
+-- Trigger 14: Kiểm tra email admin khi update
+CREATE TRIGGER trg_before_update_user_check_admin_email
+BEFORE UPDATE ON User
+FOR EACH ROW
+BEGIN
+    IF NEW.user_type = 2 AND NOT NEW.email LIKE '%@engjoy.com' THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Admin email must end with @engjoy.com';
+    END IF;
+END$$
+
+
+
+
+-- Trigger 15: Chỉ regular user có thể vào Leaderboard
+CREATE TRIGGER trg_before_insert_leaderboard_check_user
+BEFORE INSERT ON Leaderboard
+FOR EACH ROW
+BEGIN
+    DECLARE role TINYINT;
+    SELECT user_type INTO role FROM User WHERE user_id = NEW.user_id;
+    IF role <> 1 THEN
+        SIGNAL SQLSTATE '45000'
+        SET MESSAGE_TEXT = 'Only regular users (user_type = 1) can be in the leaderboard.';
+    END IF;
+END$$
+-- Pending
+UPDATE WordSet ws
+JOIN ReportedSet rs ON ws.word_set_id = rs.word_set_id
+SET ws.is_hidden = 1
+WHERE rs.report_status = 1;
+
+
+
+
+DELIMITER ;
+
+
+
+
+
+
+INSERT MỚI
+INSERT INTO User (username, password, email, full_name, phone_number, description, birthdate, registration_date, user_type)
+VALUES
+('alice01', MD5('AlicePass@2024'), 'alice@gmail.com', 'Alice Johnson', '+841234567890', 'Beginner learner from Vietnam.', '1995-12-04', NOW(), 1),
+('bob_the_builder', MD5('BobBuilder@123'), 'bob@gmail.com', 'Bob Miller', '+849876543210', 'Enjoys vocabulary games.', '1988-11-23', NOW(), 1),
+('charlie23', MD5('Charlie@2023'), 'charlie@gmail.com', 'Charlie Smith', '+849812345678', 'English conversation practice.', '1992-08-15', NOW(), 1),
+('diana.k', MD5('DianaLove@9'), 'diana.k@gmail.com', 'Diana King', '+84712345678', 'Learning British English.', '1999-03-04', NOW(), 1),
+('ethan_dev', MD5('Ethan!Dev2024'), 'ethan@gmail.com', 'Ethan Brown', '+848765432109', 'Tech enthusiast learning English.', '1990-01-30', NOW(), 1),
+('fiona.green', MD5('FionaGreen@88'), 'fiona@gmail.com', 'Fiona Green', '+849123456789', 'Interested in grammar rules.', '1985-09-10', NOW(), 1),
+('george_learner', MD5('George#2024'), 'george@gmail.com', 'George Adams', '+849334455667', 'Focuses on writing skills.', '1993-06-20', NOW(), 1),
+('hannah_98', MD5('Hannah_Star@98'), 'hannah@gmail.com', 'Hannah Lee', '+847766554433', 'Loves English podcasts.', '1998-02-18', NOW(), 1),
+('ian.w', MD5('Ian_Wise@2025'), 'ian@gmail.com', 'Ian White', '+849911122233', 'Daily learner from Hanoi.', '1987-12-05', NOW(), 1),
+('julia.rose', MD5('JuliaRose@88'), 'julia@gmail.com', 'Julia Rose', '+846655443322', 'Practicing spoken English.', '1996-07-09', NOW(), 1),
+('karen.b', MD5('KarenBest@22'), 'karen@gmail.com', 'Karen Brown', '+843344556677', 'Likes English literature.', '1991-10-14', NOW(), 1),
+('leo_h', MD5('LeoHunt!78'), 'leo@gmail.com', 'Leo Hunt', '+847788990011', 'Learns with mobile apps.', '1989-03-03', NOW(), 1),
+('mia_w', MD5('MiaWins@11'), 'mia@gmail.com', 'Mia Wilson', '+845566778899', 'Prefers online courses.', '1994-05-21', NOW(), 1),
+('nathan_g', MD5('NateG@2024'), 'nathan@gmail.com', 'Nathan Gray', '+848800112233', 'Focus on pronunciation.', '1993-10-01', NOW(), 1),
+('olivia.m', MD5('Olivia@M2025'), 'olivia@gmail.com', 'Olivia Martin', '+849911998877', 'Learning English idioms.', '1997-03-28', NOW(), 1),
+('peter.t', MD5('Peter#T89'), 'peter@gmail.com', 'Peter Thompson', '+849922334455', 'Loves reading English books.', '1992-09-14', NOW(), 1),
+('quincy.r', MD5('QuincyRocks@12'), 'quincy@gmail.com', 'Quincy Reed', '+847788223344', 'Watching English movies.', '1986-06-11', NOW(), 1),
+('rachel.s', MD5('RachelStrong@34'), 'rachel@gmail.com', 'Rachel Scott', '+845544332211', 'Practicing daily speaking.', '1995-12-22', NOW(), 1),
+('samuel.k', MD5('SamK_2025@'), 'samuel@gmail.com', 'Samuel King', '+848899776655', 'Interested in TOEIC prep.', '1988-04-18', NOW(), 1),
+('tina.y', MD5('TinaY2024@'), 'tina@gmail.com', 'Tina Young', '+844455667788', 'English for business.', '1990-08-30', NOW(), 1),
+-- Admin
+('admin_engjoy', MD5('AdminEngJoy@2024'), 'admin@engjoy.com', 'Admin EngJoy', '+849000000000', 'System administrator.', '1990-01-01', NOW(), 2);
+
+
+
+
+
+
+
+
+
+
+
+
+-- TAG
+INSERT INTO Tag (tag_name) VALUES
+-- Cơ bản
+('Basic'),
+('Beginner'),
+('Elementary'),
+('Pre-Intermediate'),
+('Intermediate'),
+('Upper-Intermediate'),
+('Advanced'),
+('Proficiency'),
+-- Kỹ năng
+('Listening'),
+('Speaking'),
+('Reading'),
+('Writing'),
+('Grammar'),
+('Vocabulary'),
+('Pronunciation'),
+('Communication Skills'),
+-- Ngữ pháp
+('Tenses'),
+('Passive Voice'),
+('Conditionals'),
+('Modal Verbs'),
+('Reported Speech'),
+('Articles'),
+('Prepositions'),
+('Phrasal Verbs'),
+('Idioms'),
+('Collocations'),
+('Gerunds and Infinitives'),
+-- Từ vựng theo chủ đề
+('Food and Drink'),
+('Travel and Holidays'),
+('Work and Jobs'),
+('Technology'),
+('Education'),
+('Health'),
+('Shopping'),
+('Sports and Leisure'),
+('Environment'),
+('Culture'),
+('Weather'),
+('Daily Routine'),
+('Emotions'),
+('Family and Relationships'),
+('Describing People'),
+('Places and Directions'),
+('Time and Date'),
+('Transport'),
+('Hobbies'),
+('Colors'),
+('Numbers'),
+-- Thi cử và chứng chỉ
+('IELTS'),
+('TOEIC'),
+('TOEFL'),
+('Cambridge Exams'),
+('Academic English'),
+('Business English'),
+('English for Kids'),
+('English for Teens'),
+('English for Adults'),
+-- Luyện tập và phương pháp học
+('Flashcards'),
+('Quizzes'),
+('Games'),
+('Exercises'),
+('Tips and Tricks'),
+('Learning Strategies'),
+('English Songs'),
+('English Movies'),
+('English Stories'),
+('Dialogues'),
+('Role Play'),
+('Speaking Topics'),
+('Essay Writing'),
+('Reading Comprehension'),
+('Listening Practice'),
+-- Khác
+('Slang'),
+('British English'),
+('American English'),
+('Formal vs Informal'),
+('Abbreviations'),
+('Online Learning'),
+('Study Plan'),
+('Common Mistakes'),
+('Language Exchange');
+-- WORDSET
+
+
+INSERT INTO WordSet (title, description, created_date, last_update, is_hidden, user_id)
+VALUES 
+('Basic Verbs', 'Common action verbs for beginners.', '2025-05-01 10:00:00', '2025-05-01 10:00:00', 2, 1),
+('Food Vocabulary', 'Words related to food and eating habits.', '2025-05-02 12:00:00', '2025-05-02 12:00:00', 2, 2),
+('Travel Phrases', 'Useful English phrases when traveling abroad.', '2025-05-03 08:30:00', '2025-05-03 08:30:00', 2, 3),
+('Technology Terms', 'Vocabulary related to modern technology.', '2025-05-04 09:45:00', '2025-05-04 09:45:00', 2, 4),
+('Weather Words', 'Basic words to describe the weather.', '2025-05-05 15:00:00', '2025-05-05 15:00:00', 1, 5),
+('Office English', 'Common words and phrases used in office settings.', '2025-05-06 14:00:00', '2025-05-06 14:00:00', 2, 6),
+('Shopping Words', 'Vocabulary for shopping situations.', '2025-05-07 11:15:00', '2025-05-07 11:15:00', 2, 7),
+('Daily Routine', 'Verbs and nouns related to daily activities.', '2025-05-08 09:00:00', '2025-05-08 09:00:00', 1, 8),
+('School Vocabulary', 'Words commonly used in school or education.', '2025-05-09 16:30:00', '2025-05-09 16:30:00', 2, 9),
+('Medical English', 'Vocabulary used in healthcare and medical situations.', '2025-05-10 10:30:00', '2025-05-10 10:30:00', 2, 10),
+('Business English', 'Essential vocabulary for business settings.', '2025-05-11 09:00:00', '2025-05-11 09:00:00', 2, 10),
+('Sports Vocabulary', 'English words related to sports and games.', '2025-05-12 13:30:00', '2025-05-12 13:30:00', 2, 12),
+('Holiday Words', 'Useful words for holidays and vacations.', '2025-05-13 15:15:00', '2025-05-13 15:15:00', 2, 13),
+('Transportation Terms', 'Common terms used in transportation.', '2025-05-14 10:00:00', '2025-05-14 10:00:00', 1, 14),
+('Clothing Vocabulary', 'Names of clothing items in English.', '2025-05-15 08:45:00', '2025-05-15 08:45:00', 2, 15),
+('Restaurant English', 'English used when dining at restaurants.', '2025-05-16 14:20:00', '2025-05-16 14:20:00', 2, 16),
+('Nature Words', 'Words related to nature and environment.', '2025-05-17 09:30:00', '2025-05-17 09:30:00', 2, 17),
+('Job Interviews', 'Vocabulary and phrases for job interviews.', '2025-05-18 11:10:00', '2025-05-18 11:10:00', 1, 18),
+('Feelings & Emotions', 'Words to describe emotions and feelings.', '2025-05-19 10:00:00', '2025-05-19 10:00:00', 2, 19),
+('Colors & Shapes', 'Basic vocabulary for colors and geometric shapes.', '2025-05-19 14:00:00', '2025-05-19 14:00:00', 2, 19);
+
+
+
+
+
+
+-- WORDSETTAG
+INSERT INTO WordSetTag (word_set_id, tag_id)
+VALUES
+(1, 1), (1, 3),
+(2, 1), (2, 3),
+(3, 5),
+(4, 2), (4, 6),
+(5, 1), (5, 3),
+(6, 4), (6, 9),
+(7, 10), (7, 3),
+(8, 1), (8, 3),
+(9, 8),
+(10, 7),
+(11, 4), (11, 9),
+(12, 2), (12, 3),
+(13, 5),
+(14, 5),
+(15, 10),
+(16, 3),
+(17, 1),
+(18, 4),
+(19, 1), (19, 3),
+(20, 1), (20, 8);
+
+
+-- SAVEDWORDSET
+INSERT INTO SavedWordSet (word_set_id, saved_date, user_saved_id)
+VALUES
+(1, '2025-05-20 08:00:00', 5),   
+(2, '2025-05-20 09:15:00', 3),   
+(3, '2025-05-20 10:30:00', 1),  
+(4, '2025-05-21 11:00:00', 2),   
+(5, '2025-05-21 12:00:00', 6),  
+(6, '2025-05-21 14:30:00', 7),   
+(7, '2025-05-21 15:45:00', 4),  
+(8, '2025-05-22 09:00:00', 2),   
+(9, '2025-05-22 10:00:00', 1),   
+(10, '2025-05-22 11:15:00', 11),
+(11, '2025-05-22 13:45:00', 12),
+(12, '2025-05-23 08:30:00', 10), 
+(13, '2025-05-23 09:40:00', 14),
+(14, '2025-05-23 10:50:00', 13), 
+(15, '2025-05-23 13:00:00', 16), 
+(16, '2025-05-23 14:10:00', 15), 
+(17, '2025-05-24 08:00:00', 18), 
+(18, '2025-05-24 09:10:00', 17), 
+(19, '2025-05-24 10:20:00', 10), 
+(20, '2025-05-24 11:30:00', 1);  
+-- VOCAB
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(1, 'run', 'to move quickly on foot'),
+(1, 'eat', 'to consume food'),
+(1, 'sleep', 'to rest your body and mind'),
+(1, 'walk', 'đi bộ'),
+(1, 'write', 'viết'),
+(1, 'read', 'đọc'),
+(1, 'listen', 'nghe'),
+(1, 'speak', 'nói'),
+(1, 'jump', 'nhảy'),
+(1, 'drink', 'uống'),
+(1, 'drive', 'lái xe'),
+(1, 'think', 'nghĩ'),
+(1, 'cook', 'nấu ăn'),
+(1, 'buy', 'mua'),
+(1, 'sell', 'bán'),
+(1, 'open', 'mở'),
+(1, 'close', 'đóng'),
+(1, 'sit', 'ngồi'),
+(1, 'stand', 'đứng');
+
+
+-- 2. Food Vocabulary (word_set_id = 2)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(2, 'apple', 'a round fruit with red or green skin'),
+(2, 'bread', 'a common baked food made from flour'),
+(2, 'cheese', 'a dairy product made from milk');
+
+
+-- 3. Travel Phrases (word_set_id = 3)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(3, 'Where is the hotel?', 'asking for hotel location'),
+(3, 'I need a taxi', 'requesting transportation'),
+(3, 'How much is this?', 'asking for price');
+
+
+-- 4. Technology Terms (word_set_id = 4)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(4, 'internet', 'a global network for communication'),
+(4, 'software', 'programs used by computers'),
+(4, 'password', 'a secret word to access systems');
+
+
+-- 5. Weather Words (word_set_id = 5)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(5, 'sunny', 'bright with sunlight'),
+(5, 'rainy', 'having a lot of rain'),
+(5, 'cloudy', 'covered with clouds');
+
+
+-- 6. Office English (word_set_id = 6)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(6, 'meeting', 'a gathering of people to discuss something'),
+(6, 'deadline', 'the final time to complete something'),
+(6, 'report', 'a document with information'),
+(6, 'conference', 'a formal meeting'),
+(6, 'coworker', 'a colleague at work'),
+(6, 'promotion', 'a job upgrade'),
+(6, 'agenda', 'a list of items to discuss'),
+(6, 'memo', 'a written message'),
+(6, 'boss', 'a person in charge'),
+(6, 'schedule', 'a plan of events'),
+(6, 'overtime', 'extra hours of work'),
+(6, 'colleague', 'a fellow worker'),
+(6, 'cubicle', 'a small office space'),
+(6, 'fax', 'a document sent electronically'),
+(6, 'printer', 'a machine for printing'),
+(6, 'presentation', 'a formal talk'),
+(6, 'email', 'a digital message'),
+(6, 'file', 'a document or folder'),
+(6, 'laptop', 'a portable computer'),
+(6, 'coffee break', 'a short rest at work'),
+(6, 'whiteboard', 'a board for writing'),
+(6, 'minutes', 'notes from a meeting'),
+(6, 'bossy', 'too controlling'),
+(6, 'intern', 'a trainee at a job'),
+(6, 'briefing', 'a short meeting'),
+(6, 'notice', 'an official warning');
+
+
+
+
+-- 7. Shopping Words (word_set_id = 7)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(7, 'price', 'the amount of money something costs'),
+(7, 'cashier', 'a person who receives payment'),
+(7, 'receipt', 'a paper showing purchase details'),
+(7, 'discount', 'a reduced price'),
+(7, 'aisle', 'a walkway between shelves'),
+(7, 'coupon', 'a discount ticket'),
+(7, 'checkout', 'place to pay'),
+(7, 'brand', 'a product name'),
+(7, 'label', 'product tag'),
+(7, 'mall', 'a shopping complex'),
+(7, 'refund', 'money back'),
+(7, 'exchange', 'to swap items'),
+(7, 'bag', 'a container for items'),
+(7, 'clerk', 'a store worker'),
+(7, 'basket', 'a hand-held container'),
+(7, 'total', 'the final amount'),
+(7, 'line', 'a queue to pay');
+
+
+
+
+-- 8. Daily Routine (word_set_id = 8)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(8, 'wake up', 'to stop sleeping'),
+(8, 'brush teeth', 'to clean your teeth'),
+(8, 'go to work', 'to leave for your job'),
+(8, 'take a shower', 'to clean the body with water'),
+(8, 'eat breakfast', 'to have the morning meal'),
+(8, 'go to bed', 'to lie down for sleep'),
+(8, 'leave home', 'to go out of the house'),
+(8, 'take the bus', 'to ride the bus'),
+(8, 'arrive at work', 'to reach your job location'),
+(8, 'have lunch', 'to eat a midday meal'),
+(8, 'finish work', 'to complete your job for the day'),
+(8, 'go home', 'to return to your house'),
+(8, 'have dinner', 'to eat an evening meal'),
+(8, 'watch TV', 'to look at television programs'),
+(8, 'read a book', 'to look at and understand a book'),
+(8, 'relax', 'to rest and feel calm'),
+(8, 'set alarm', 'to program a wake-up device'),
+(8, 'do laundry', 'to wash clothes'),
+(8, 'clean room', 'to make a room tidy'),
+(8, 'check emails', 'to look at your electronic messages'),
+(8, 'write diary', 'to record your daily events');
+
+
+
+
+-- 9. School Vocabulary (word_set_id = 9)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(9, 'student', 'a person who is learning'),
+(9, 'classroom', 'a room where lessons take place'),
+(9, 'homework', 'school tasks done at home'),
+(9, 'teacher', 'a person who gives lessons'),
+(9, 'exam', 'a test of knowledge'),
+(9, 'blackboard', 'a board to write on with chalk'),
+(9, 'desk', 'a table for studying'),
+(9, 'notebook', 'a book for writing notes'),
+(9, 'pen', 'a tool for writing with ink'),
+(9, 'pencil', 'a tool for writing with lead'),
+(9, 'library', 'a place with books to read'),
+(9, 'backpack', 'a bag for carrying school items'),
+(9, 'subject', 'a field of study'),
+(9, 'grade', 'a mark showing how well you did'),
+(9, 'principal', 'the head of a school'),
+(9, 'exam paper', 'a paper with test questions'),
+(9, 'marker', 'a pen with colored ink'),
+(9, 'chalk', 'a stick for writing on a board'),
+(9, 'recess', 'a break between classes'),
+(9, 'school bell', 'a sound that signals class times'),
+(9, 'uniform', 'clothes students wear to school'),
+(9, 'project', 'a school assignment'),
+(9, 'quiz', 'a short test');
+
+
+-- 10. Medical English (word_set_id = 10)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(10, 'doctor', 'a person who treats patients'),
+(10, 'medicine', 'a substance used to treat illness'),
+(10, 'hospital', 'a place for medical treatment'),
+(10, 'nurse', 'a medical assistant'),
+(10, 'clinic', 'a small medical center'),
+(10, 'injection', 'medicine given by a needle'),
+(10, 'appointment', 'a set time to see a doctor'),
+(10, 'fever', 'high body temperature'),
+(10, 'cold', 'a common illness with sneezing'),
+(10, 'flu', 'an illness with fever and cough'),
+(10, 'pain', 'a feeling of discomfort'),
+(10, 'X-ray', 'a picture of bones'),
+(10, 'stethoscope', 'a tool for hearing the heart'),
+(10, 'thermometer', 'a tool for measuring temperature'),
+(10, 'surgery', 'an operation on the body'),
+(10, 'ambulance', 'a vehicle for emergencies'),
+(10, 'pill', 'a small form of medicine'),
+(10, 'prescription', 'a doctor’s written order for medicine'),
+(10, 'check-up', 'a regular health examination'),
+(10, 'symptom', 'a sign of illness');
+
+
+
+
+-- 11. Business English (word_set_id = 11)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(11, 'contract', 'a formal agreement'),
+(11, 'negotiation', 'a discussion to reach an agreement'),
+(11, 'profit', 'money gained after expenses'),
+(11, 'client', 'a customer or buyer'),
+(11, 'strategy', 'a business plan'),
+(11, 'invest', 'to put money into something'),
+(11, 'shareholder', 'a person who owns company stock'),
+(11, 'revenue', 'money earned by a business'),
+(11, 'loss', 'money lost in business'),
+(11, 'budget', 'a financial plan'),
+(11, 'employee', 'a person who works for a company'),
+(11, 'manager', 'a person who leads a team'),
+(11, 'salary', 'money paid for work'),
+(11, 'meeting room', 'a place for business talks'),
+(11, 'startup', 'a new business'),
+(11, 'industry', 'a sector of business'),
+(11, 'partnership', 'a business owned by two or more'),
+(11, 'merger', 'when two companies join'),
+(11, 'brand', 'a company’s identity'),
+(11, 'entrepreneur', 'a person who starts a business'),
+(11, 'advertisement', 'a message to promote a product'),
+(11, 'target market', 'the group aimed at by a business');
+
+
+
+
+-- 12. Sports Vocabulary (word_set_id = 12)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(12, 'goal', 'a point scored in a game'),
+(12, 'team', 'a group of players'),
+(12, 'coach', 'a person who trains athletes'),
+(12, 'referee', 'a judge in a game'),
+(12, 'score', 'points in a game'),
+(12, 'tournament', 'a sports competition'),
+(12, 'equipment', 'gear used in sports'),
+(12, 'whistle', 'a tool used by referees'),
+(12, 'foul', 'a rule violation'),
+(12, 'goalkeeper', 'a player who defends the goal'),
+(12, 'kick', 'to hit with the foot'),
+(12, 'pass', 'to give the ball to a teammate'),
+(12, 'run', 'to move quickly on foot'),
+(12, 'jump', 'to push off the ground with feet');
+
+
+-- 13. Holiday Words (word_set_id = 13)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(13, 'beach', 'sandy area by the sea'),
+(13, 'luggage', 'bags for travel'),
+(13, 'souvenir', 'a keepsake from a trip'),
+(13, 'passport', 'a travel ID'),
+(13, 'cruise', 'a ship vacation'),
+(13, 'tourist', 'a person on vacation'),
+(13, 'itinerary', 'travel plan schedule'),
+(13, 'vacation', 'time away from work');
+
+
+-- 14. Transportation Terms (word_set_id = 14)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(14, 'bus', 'a large road vehicle for passengers'),
+(14, 'ticket', 'a document for travel entry'),
+(14, 'station', 'a place where transport stops'),
+(14, 'subway', 'an underground train'),
+(14, 'taxi', 'a hired car with driver'),
+(14, 'platform', 'a boarding area'),
+(14, 'departure', 'act of leaving'),
+(14, 'arrival', 'act of reaching destination'),
+(14, 'luggage', 'travelers bags'),
+(14, 'transfer', 'change from one vehicle to another');
+
+
+-- 15. Clothing Vocabulary (word_set_id = 15)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(15, 'shirt', 'a piece of clothing for the upper body'),
+(15, 'pants', 'clothes covering the legs'),
+(15, 'jacket', 'a piece of outerwear for warmth'),
+(15, 'dress', 'a one-piece outfit'),
+(15, 'shoes', 'footwear'),
+(15, 'hat', 'a head covering'),
+(15, 'sweater', 'knitted garment for warmth'),
+(15, 'jeans', 'casual pants made of denim'),
+(15, 'sneakers', 'comfortable sports shoes'),
+(15, 'socks', 'foot coverings'),
+(15, 'underwear', 'clothing worn beneath'),
+(15, 'tie', 'cloth worn around neck'),
+(15, 'scarf', 'fabric worn for warmth'),
+(15, 'gloves', 'hand coverings');
+
+
+-- 16. Restaurant English (word_set_id = 16)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(16, 'menu', 'a list of dishes served'),
+(16, 'waiter', 'a person who serves food'),
+(16, 'bill', 'a statement of money owed for food'),
+(16, 'reservation', 'a table booking'),
+(16, 'menu item', 'a dish on the menu'),
+(16, 'tip', 'extra money for service');
+
+
+-- 17. Nature Words (word_set_id = 17)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(17, 'tree', 'a tall plant with leaves and branches'),
+(17, 'river', 'a flowing body of water'),
+(17, 'mountain', 'a high landform'),
+(17, 'flower', 'a colorful plant part'),
+(17, 'sun', 'the star of our solar system'),
+(17, 'forest', 'a large area of trees');
+
+
+-- 18. Job Interviews (word_set_id = 18)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(18, 'resume', 'a document listing skills and experience'),
+(18, 'interview', 'a formal meeting for a job'),
+(18, 'strengths', 'positive personal qualities'),
+(18, 'weakness', 'a personal shortcoming'),
+(18, 'employer', 'a person offering a job'),
+(18, 'question', 'something asked for info'),
+(18, 'applicant', 'person applying for job'),
+(18, 'qualifications', 'required skills for job'),
+(18, 'reference', 'person who recommends you'),
+(18, 'salary', 'payment for work'),
+(18, 'benefits', 'additional job advantages'),
+(18, 'position', 'specific job role'),
+(18, 'cover letter', 'letter sent with resume'),
+(18, 'experience', 'knowledge from past work'),
+(18, 'follow-up', 'contact after interview');
+
+
+-- 19. Feelings & Emotions (word_set_id = 19)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(19, 'happy', 'feeling good or joyful'),
+(19, 'angry', 'feeling upset or mad'),
+(19, 'nervous', 'feeling anxious or uneasy'),
+(19, 'excited', 'full of energy and joy'),
+(19, 'bored', 'feeling uninterested'),
+(19, 'surprised', 'taken aback unexpectedly'),
+(19, 'sad', 'feeling unhappy'),
+(19, 'frustrated', 'feeling annoyed'),
+(19, 'proud', 'feeling pleased about achievement'),
+(19, 'lonely', 'feeling alone'),
+(19, 'grateful', 'feeling thankful'),
+(19, 'confident', 'feeling self-assured'),
+(19, 'jealous', 'feeling envious');
+
+
+-- 20. Colors & Shapes (word_set_id = 20)
+INSERT INTO Vocabulary (word_set_id, term, definition) VALUES
+(20, 'red', 'the color of fire or blood'),
+(20, 'circle', 'a round shape'),
+(20, 'square', 'a shape with four equal sides'),
+(20, 'blue', 'the color of sky'),
+(20, 'triangle', 'a shape with 3 sides'),
+(20, 'rectangle', 'a 4-sided shape with 2 long edges'),
+(20, 'purple', 'mix of red and blue'),
+(20, 'pink', 'light red color'),
+(20, 'hexagon', 'shape with six sides'),
+(20, 'black', 'darkest color');
+
+
+-- GAME
+INSERT INTO Game (game_name) VALUES
+('Word Search'),
+('Flip Card');
+-- GAMEMODE
+
+
+INSERT INTO GameMode (game_id, grid_size, min_words, max_words) VALUES
+-- Word Search (game_id = 1)
+(1, '22x22', 5, 5),
+(1, '22x22', 5, 10),
+(1, '22x22', 5, 15),
+-- Flip Card (game_id = 2)
+(2, '3x4', 6, 6),
+(2, '4x5', 10, 10),
+(2, '5x6', 15, 15);
+
+
+-- LEADERBOARD
+INSERT INTO Leaderboard (leaderboard_id, user_id, word_set_quantity, created_date)
+VALUES
+(1, 1, 1, '2025-06-03 09:00:00'),
+(1, 3, 1, '2025-06-03 09:00:00'),
+(1, 4, 1, '2025-06-03 09:00:00'),
+(1, 6, 1, '2025-06-03 09:00:00'),
+(1, 8, 1, '2025-06-03 09:00:00'),
+(1, 10, 2, '2025-06-03 09:00:00'),
+(1, 12, 1, '2025-06-03 09:00:00'),
+(1, 14, 1, '2025-06-03 09:00:00'),
+(1, 16, 1, '2025-06-03 09:00:00'),
+(1, 17, 1, '2025-06-03 09:00:00'),
+(1, 19, 2, '2025-06-03 09:00:00');
+
+
+
+
+-- REPORTEDSET
+
+
+INSERT INTO ReportedSet (
+    word_set_id, report_status, reason, reported_date
+) VALUES
+(2, 0, 'Vocabulary set contains promotional content.', '2025-05-25 08:00:00'),
+(4, 0, 'Vocabulary set contains promotional content.', '2025-05-25 08:00:00'),
+(5, 0, 'Vocabulary set contains promotional content.', '2025-05-25 08:00:00'),
+(6, 0, 'Vocabulary set contains promotional content.', '2025-05-25 08:00:00'),
+(1, 1, 'Vocabulary set contains inappropriate content.', '2025-05-26 09:30:00'),
+(3, 2, 'Vocabulary set contains offensive content.', '2025-05-27 12:00:00');
+
+
+-- GAMESESSION
+INSERT INTO GameSession (
+    session_id, user_id, word_set_id, play_date, play_duration, end_date,
+    game_mode_id, game_theme, game_outline, game_music, score
+) VALUES
+-- Word Search
+(1, 1, 1, '2025-06-01 10:00:00', 300, '2025-06-01 10:05:00', 1, 1, 1, 1, 80),
+(2, 2, 2, '2025-06-01 10:10:00', 420, '2025-06-01 10:17:00', 2, 2, 1, 2, 120),
+(3, 3, 3, '2025-06-01 10:30:00', 600, '2025-06-01 10:40:00', 3, 1, 2, 1, 200),
+
+
+-- Flip Card
+(4, 4, 4, '2025-06-01 11:00:00', 180, '2025-06-01 11:03:00', 4, 2, 2, 1, 60),
+(5, 5, 5, '2025-06-01 11:10:00', 240, '2025-06-01 11:14:00', 5, 1, 1, 2, 100),
+(6, 6, 6, '2025-06-01 11:20:00', 360, '2025-06-01 11:26:00', 6, 1, 1, 1, 150),
+(7, 7, 7, '2025-06-02 09:00:00', 300, '2025-06-02 09:05:00', 1, 1, 2, 1, 90),
+(8, 8, 8, '2025-06-02 09:10:00', 400, '2025-06-02 09:16:40', 2, 2, 1, 2, 130),
+(9, 9, 9, '2025-06-02 09:20:00', 450, '2025-06-02 09:27:30', 3, 1, 1, 1, 170),
+(10, 10, 10, '2025-06-02 09:30:00', 200, '2025-06-02 09:33:20', 4, 2, 2, 1, 50),
+(11, 10, 11, '2025-06-02 09:40:00', 300, '2025-06-02 09:45:00', 5, 1, 1, 1, 90),
+(12, 12, 12, '2025-06-02 09:50:00', 350, '2025-06-02 09:55:50', 6, 1, 2, 2, 140);

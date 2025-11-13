@@ -1,0 +1,262 @@
+:host {
+  display: block;
+  background-color: #0C1033;
+  min-height: 100vh;
+  color: white;
+}
+
+#game-frame {
+  position: relative;
+}
+
+/* Frame chứa flip card */
+.game-frame {
+  aspect-ratio: 16 / 9;
+  width: 100%;
+  max-width: 1200px;
+  background-color: black;
+  border-radius: 20px;
+  padding: 16px;
+  margin: auto;
+}
+
+.d-grid {
+  display: grid;
+  height: 100%;
+}
+
+.flip-card-wrapper {
+  perspective: 1000px;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+.flip-inner {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+.flipped .flip-inner {
+  transform: rotateY(180deg);
+}
+
+.flip-front,
+.flip-back {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  backface-visibility: hidden;
+  border-radius: 12px;
+  font-weight: bold;
+  color: white;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.flip-front {
+  background-color: #5C64A1;
+}
+
+.flip-back {
+  background-color: #33aaff;
+  transform: rotateY(180deg);
+  padding: 8px;
+  overflow: hidden;
+  box-sizing: border-box;
+  text-align: center;
+}
+
+.text-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 6px;
+  box-sizing: border-box;
+}
+
+/* ✅ Cải tiến hiển thị chữ trong thẻ */
+.text-wrap {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  word-break: break-word;
+  white-space: normal;
+  font-size: clamp(22px, 3vw, 36px); /* tăng cỡ chữ tối thiểu và tối đa */
+  font-weight: 700;                  
+  line-height: 1.3;
+  width: 100%;
+  height: 100%;
+  padding: 4px;
+  box-sizing: border-box;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+/* Theme cho game-frame */
+.dark-frame {
+  background-color: black;
+  color: white;
+}
+
+.light-frame {
+  background-color: #EAECF9;
+  color: black;
+}
+
+/* Theme cho flip card front/back */
+.dark-front {
+  background-color: #5C64A1;
+  color: white;
+}
+
+.dark-back {
+  background-color: #33aaff;
+  color: white;
+}
+
+.light-front {
+  background-color: #5C64A1;
+  color: black;
+}
+
+.light-back {
+  background-color: #33aaff;
+  color: black;
+}
+
+/* ✅ Hiệu ứng mờ dần rồi ẩn khi match */
+.matched {
+  animation: matchFadeOut 0.4s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes matchFadeOut {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: scale(0.7);
+  }
+}
+
+/* ✅ Ẩn bằng visibility để giữ layout nếu muốn */
+.hidden-card {
+  visibility: hidden;
+  pointer-events: none;
+}
+.pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9); /* Nền đậm che hết */
+  z-index: 10;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.pause-box {
+  background-color: #222;
+  color: #fff;
+  padding: 30px 40px;
+  border-radius: 12px;
+  font-size: 1.5rem;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+  text-align: center;
+}
+.result-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(12, 16, 51, 0.05); /* nền nhẹ để thấy khung game */
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.result-box {
+  max-width: 600px; /* ✅ tăng width */
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.05); /* để inherit từ theme */
+  color: black;
+  padding: 32px 24px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); /* tăng bóng */
+}
+
+.dark-result .result-box {
+  background-color: rgba(12, 16, 51, 0.95);
+  color: white;
+}
+
+.light-result .result-box {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: black;
+}
+/* === Nút mặc định: dùng màu phù hợp với theme cha === */
+.btn-outline-light {
+  border: 2px solid currentColor;
+  color: currentColor;
+  background-color: transparent;
+  transition: color 0.25s ease, background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  font-weight: 500;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  padding: 10px 24px;
+}
+
+/* === Biểu tượng trong nút === */
+.btn-outline-light i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* === Hiệu ứng hover mặc định (fallback nếu không có theme) === */
+.btn-outline-light:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* === Giao diện nền tối === */
+.dark-result .btn-outline-light {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.dark-result .btn-outline-light:hover {
+  background-color: #ffffff;
+  color: #0C1033;
+}
+
+/* === Giao diện nền sáng === */
+.light-result .btn-outline-light {
+  border-color: #0C1033;
+  color: #0C1033;
+}
+
+.light-result .btn-outline-light:hover {
+  background-color: #0C1033;
+  color: #ffffff;
+}
+
+
+

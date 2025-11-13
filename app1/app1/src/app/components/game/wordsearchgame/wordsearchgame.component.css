@@ -1,0 +1,364 @@
+:host {
+  display: block;
+  min-height: 100vh;
+}
+#game-frame {
+  position: relative;
+}
+
+/* Khung chứa phần mô tả ở bên trái */
+.description-frame {
+  height: 100%;
+  width: 20%;
+}
+
+/* Khung bố cục tổng thể */
+.layout-flex {
+  width: 100%;
+  max-width: 1600px;
+  margin: 0 auto;
+}
+
+/* Khu vực chứa lưới chữ */
+.grid-area {
+  width: 80%;
+}
+
+/* Khung bao ngoài của lưới */
+.grid-wrapper {
+  width: 100%;
+  height: auto;
+  max-width: 100%;
+  max-height: 85vh;
+  min-height: 70vh;
+  overflow: auto;
+  position: relative;
+  justify-content: flex-end;
+}
+
+/* Vùng hiển thị lưới chữ */
+.letter-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  padding: 10px;
+  border-radius: 1rem;
+  width: fit-content;
+  height: fit-content;
+  margin: auto;
+  box-sizing: border-box;
+  user-select: none;
+  cursor: pointer;
+}
+
+/* Một hàng của lưới */
+.row-flex {
+  display: flex;
+  gap: 4px;
+}
+
+/* Một ô chữ trong lưới */
+.cell-flex {
+  aspect-ratio: 1 / 1;
+  font-weight: bold;
+  font-size: clamp(18px, 2vw, 28px);
+  border-radius: 6px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 40px;
+  user-select: none;
+  box-sizing: border-box;
+  transition: background-color 0.2s ease, color 0.2s ease, outline 0.2s ease;
+}
+
+/* Khi hover vào ô */
+.cell-flex:hover {
+  outline: 1px solid #ffcc00;
+  cursor: pointer;
+  transition: outline 0.15s ease;
+}
+
+/* Khi ô đang được chọn */
+.cell-flex.selected {
+  background-color: #fff9c4 !important; /* vàng nhạt */
+  box-shadow: 0 0 5px rgba(255, 204, 0, 0.5);
+  color: black !important;
+}
+
+/* Khi ô là một phần của từ đã tìm thấy */
+.cell-flex.found-cell {
+  background-color: #6de47c !important;
+  color: black;
+  transition: background-color 0.15s ease;
+}
+
+/* Gạch định nghĩa khi đã tìm */
+.description-frame li.found {
+  text-decoration: line-through;
+  color: #aaa;
+}
+
+/* =================== */
+/* Giao diện tối (Dark) */
+/* =================== */
+.dark-mode {
+  background-color: #0C1033;
+  color: white;
+}
+
+.dark-description-frame {
+  background-color: #1a1d47;
+  color: white;
+  border-radius: 12px;
+}
+
+.dark-description-frame h5 {
+  font-weight: bold;
+  color: white;
+}
+
+.dark-description-frame .btn-outline-light {
+  background-color: #2c2f5a;
+  border-color: #3f448f;
+  color: white;
+  transition: 0.2s ease;
+}
+
+.dark-description-frame .btn-outline-light:hover {
+  background-color: #3d4384;
+}
+
+.dark-description-frame .btn-outline-light.found {
+  color: #bbb;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.dark-description-frame .btn-outline-success {
+  border-color: #ffd84d;
+  color: #ffd84d;
+  background-color: transparent;
+  padding: 4px 10px;
+}
+
+.dark-description-frame .btn-outline-success:hover {
+  background-color: #3c3c3c;
+}
+
+.dark-description-frame .btn-outline-success i {
+  font-size: 1.1rem;
+}
+
+.dark-grid-area .letter-grid {
+  background-color: #1a1d47;
+}
+
+.dark-grid-area .cell-flex {
+  background-color: #2c2f5a;
+  color: white;
+}
+
+/* =================== */
+/* Giao diện sáng (Light) */
+/* =================== */
+.light-mode {
+  background-color: #f5f5f5;
+  color: black;
+}
+
+.light-description-frame {
+  background-color: #e9efff;
+  color: black;
+  border-radius: 12px;
+}
+
+.light-description-frame h5 {
+  font-weight: bold;
+  color: black;
+}
+
+.light-description-frame .btn-outline-light {
+  background-color: #dbe9ff;
+  border-color: #d3dffe;
+  color: #333;
+  transition: 0.2s ease;
+}
+
+.light-description-frame .btn-outline-light:hover {
+  background-color: #f4f6fc;
+}
+
+.light-description-frame .btn-outline-light.found {
+  color: #999;
+  text-decoration: line-through;
+  opacity: 0.6;
+}
+
+.light-description-frame .btn-outline-success {
+  border-color: #ffcc00;
+  color: #ffcc00;
+  background-color: #ffffff;
+  padding: 4px 10px;
+  box-shadow: none;
+}
+
+.light-description-frame .btn-outline-success:hover {
+  background-color: #fdf6cc;
+  color: #c99700;
+  border-color: #e0b800;
+}
+
+.light-description-frame .btn-outline-success i {
+  font-size: 1.1rem;
+}
+
+.light-description-frame h5,
+.light-description-frame p {
+  color: black;
+}
+
+.light-grid-area .letter-grid {
+  background-color: #ffffff;
+}
+
+.light-grid-area .cell-flex {
+  background-color: #e6ebff;
+  color: black;
+}
+/* ✅ Giảm padding và chiều cao nút 👁 hiển thị đáp án */
+.description-frame .btn-outline-success {
+  padding: 0 !important;
+  height: 28px !important;
+  width: 28px !important;
+  font-size: 14px !important;
+  line-height: 1;
+  display: flex;
+  align-items: left;
+  justify-content: left;
+}
+.description-frame .btn-outline-success i {
+  padding: 0;                    /* giảm khoảng cách nội bộ của icon nếu có */
+  font-size: 16px;
+  line-height: 1;
+}
+.description-frame span[appAutoFont] {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2; /* hoặc thấp hơn nếu cần */
+  display: block;
+}
+/* Giảm padding bên trong nút định nghĩa */
+.description-frame .btn-outline-light.flex-grow-1 {
+  padding: 4px 8px !important;
+  line-height: 1.2;
+}
+
+/* Giảm padding và margin của chữ bên trong (AutoFont span) */
+.description-frame .btn-outline-light span[appAutoFont] {
+  margin: 0 !important;
+  padding: 0 !important;
+  line-height: 1.2;
+  display: block;
+  text-align: left;
+}
+
+.pause-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.9);
+  z-index: 10;
+}
+.pause-box {
+  background-color: #222;
+  color: #fff;
+  font-size: 1.5rem;
+  padding: 20px 40px;
+  border-radius: 12px;
+  box-shadow: 0 0 10px rgba(255, 255, 255, 0.2);
+}
+.result-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(12, 16, 51, 0.05); /* nền nhẹ để thấy khung game */
+  z-index: 99;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.result-box {
+  max-width: 600px; /* ✅ tăng width */
+  width: 100%;
+  background-color: rgba(255, 255, 255, 0.95); /* để inherit từ theme */
+  color: black;
+  padding: 32px 24px;
+  border-radius: 16px;
+  text-align: center;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4); /* tăng bóng */
+}
+
+.dark-result .result-box {
+  background-color: rgba(12, 16, 51, 0.95);
+  color: white;
+}
+
+.light-result .result-box {
+  background-color: rgba(255, 255, 255, 0.95);
+  color: black;
+}
+/* === Nút mặc định: dùng màu phù hợp với theme cha === */
+.btn-outline-light {
+  border: 2px solid currentColor;
+  color: currentColor;
+  background-color: transparent;
+  transition: color 0.25s ease, background-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
+  font-weight: 500;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  padding: 10px 24px;
+}
+
+/* === Biểu tượng trong nút === */
+.btn-outline-light i {
+  font-size: 1.2rem;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+
+/* === Hiệu ứng hover mặc định (fallback nếu không có theme) === */
+.btn-outline-light:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+}
+
+/* === Giao diện nền tối === */
+.dark-result .btn-outline-light {
+  border-color: #ffffff;
+  color: #ffffff;
+}
+
+.dark-result .btn-outline-light:hover {
+  background-color: #ffffff;
+  color: #0C1033;
+}
+
+/* === Giao diện nền sáng === */
+.light-result .btn-outline-light {
+  border-color: #0C1033;
+  color: #0C1033;
+}
+
+.light-result .btn-outline-light:hover {
+  background-color: #0C1033;
+  color: #ffffff;
+}
+
+
+

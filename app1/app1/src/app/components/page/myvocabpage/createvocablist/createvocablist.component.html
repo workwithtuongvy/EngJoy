@@ -1,0 +1,102 @@
+<app-header></app-header>
+
+<div class="d-flex min-vh-100 align-items-stretch">
+  <app-side-bar></app-side-bar>
+
+  <div class="flex-grow-1 p-4 game-area" style="background-color: #0C1033;">
+    <div class="container-fluid">
+
+      <!-- Tiêu đề + nút Create -->
+      <div class="header-row d-flex justify-content-between align-items-center mb-3">
+        <img src="assets/myvocal/ic_yourvocab.png" alt="icon" class="vocab-icon" />
+        <button class="btn create-btn" (click)="submit()">
+          {{ isEditMode ? 'Update' : 'Create' }}
+        </button>
+      </div>
+
+      <!-- Title + Tag -->
+      <div class="mb-3">
+        <!-- Tiêu đề -->
+        <input class="form-control form-control-lg mb-2" placeholder="Title" [(ngModel)]="setTitle" />
+
+        <!-- Tag: đã chọn + dropdown -->
+        <div class="d-flex align-items-start gap-2 mb-3 position-relative">
+          <!-- Tag đã chọn -->
+          <div class="flex-grow-1 p-2 rounded bg-light">
+            <label class="form-label fw-bold text-dark">Wordset Tag</label>
+            <div class="d-flex flex-wrap gap-2 mt-1">
+              <span *ngFor="let tag of selectedTags" class="badge-tag">
+                {{ getTagNameById(tag) }}
+                <button type="button" class="btn-close" aria-label="Close" (click)="removeTag(tag)"></button>
+              </span>
+            </div>
+          </div>
+
+          <!-- Nút mở dropdown -->
+          <div class="position-relative">
+            <button type="button" class="btn btn-addtag rounded-pill px-4 py-2" (click)="toggleDropdown()">
+              Tag
+            </button>
+
+            <!-- Dropdown tag -->
+            <div *ngIf="dropdownOpen"
+                class="position-absolute bg-white border rounded shadow p-3 mt-2 dropdown-menu-custom"
+                style="z-index: 1000; width: 200px; right: 0; max-height: 200px; overflow-y: auto;">
+              <div *ngFor="let tag of availableTags">
+                <div class="form-check">
+                  <input class="form-check-input" type="checkbox"
+                        [id]="'tag-' + tag.tag_id"
+                        [checked]="selectedTags.includes(tag.tag_id)"
+                        (change)="onTagToggle(tag.tag_id, $event)" />
+                  <label class="form-check-label" [for]="'tag-' + tag.tag_id">{{ tag.tag_name }}</label>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr class="border-light" />
+
+      <!-- Thông báo -->
+      <div *ngIf="notification.show"
+           [class]="notification.isError ? 'notification error' : 'notification success'"
+           role="alert">
+        {{ notification.message }}
+      </div>
+
+      <!-- Danh sách thẻ từ -->
+      <div cdkDropList (cdkDropListDropped)="drop($event)">
+        <div *ngFor="let card of cards; let i = index" cdkDrag class="card-item mb-3 p-3 rounded bg-light">
+          <div class="d-flex justify-content-between align-items-center mb-2">
+            <strong class="text-dark">#{{ i + 1 }}</strong>
+            <div>
+              <button class="btn btn-sm btn-outline-danger me-2" (click)="removeCard(i)">🗑</button>
+              <span cdkDragHandle class="drag-handle" style="cursor: grab;">☰</span>
+            </div>
+          </div>
+
+          <!-- Nhập TERM -->
+          <div class="mb-2">
+            <label class="form-label text-dark">TERM</label>
+            <input
+              class="form-control form-control-sm custom-input"
+              [(ngModel)]="card.term"
+              (keypress)="allowOnlyEnglish($event)"
+              (paste)="onPaste($event)"
+            />
+          </div>
+
+          <!-- Nhập DEFINITION -->
+          <div>
+            <label class="form-label text-dark">DEFINITION</label>
+            <input class="form-control form-control-sm custom-input" [(ngModel)]="card.definition" />
+          </div>
+        </div>
+      </div>
+
+      <!-- Nút thêm thẻ mới -->
+      <button class="btn more-card-btn w-100 mt-3" (click)="addCard()">+ More card</button>
+    </div>
+  </div>
+</div>

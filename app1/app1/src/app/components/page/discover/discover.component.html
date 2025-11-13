@@ -1,0 +1,125 @@
+<app-header></app-header>
+
+<div class="d-flex">
+
+  <!-- Sidebar bên trái -->
+  <app-side-bar></app-side-bar>
+
+  <!-- PHẦN CHÍNH BÊN PHẢI -->
+  <div class="flex-grow-1 w-100">
+
+    <!-- PHẦN TAG -->
+    <div class="tags-wrapper text-white px-4 pt-4">
+      <h3 style="font-size: 20px;margin-bottom: 20px;">Discover tagged vocabulary collections!</h3>
+
+      <!-- Danh sách tag -->
+      <div class="tag-list d-flex flex-wrap justify-content-center gap-2">
+        <div class="tag-badge"
+             *ngFor="let tag of visibleTags; let i = index"
+             [ngStyle]="{ 'background-color': getTagColor(i, activeTagIndices[i]) }"
+             (click)="toggleTag(i)"
+             [class.active]="activeTagIndices[i]">
+          <span class="tag-icon">🚀</span>
+          {{ tag.tag_name }}
+        </div>
+      </div>
+
+      <!-- Nút mở rộng/thu gọn -->
+      <div class="text-center mt-2">
+        <button class="btn btn-outline-light btn-sm px-4 py-1" (click)="toggleShowAllTags()">
+          {{ showAllTags ? 'Hide' : 'Show all tags' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- NỘI DUNG CHÍNH -->
+    <div class="main-content flex-grow-1 d-flex flex-column">
+
+      <!-- Phần danh sách bộ từ -->
+      <div class="flex-grow-1 p-4" style="background-color: #0C1033;">
+
+        <!-- Tiêu đề -->
+        <div class="section-title-with-button">
+          <span>Word sets tagged with your selected topics!</span>
+        </div>
+
+        <!-- Grid các bộ từ -->
+        <div class="vocab-grid scroll-x" #vocabContainer>
+          <div class="vocab-card" *ngFor="let set of visibleVocabSets; let i = index">
+
+            <!-- Ảnh bộ từ -->
+            <div class="card-image"></div>
+
+            <!-- Nội dung chính -->
+            <div class="card-main">
+              <div class="avatar-container">
+                <div class="avatar"
+                     [style.background-image]="'url(assets/useric.png)'"
+                     [routerLink]="['/wordset', set.word_set_id]"></div>
+                <div class="saved-count">{{ set.savedCount }} saved</div>
+              </div>
+
+              <div class="right-info">
+                <div class="top-row">
+                  <div class="card-title-wrapper">
+                    <div class="card-title"
+                         (click)="openPopup(set.word_set_id!)">
+                      {{ set.title }}
+                    </div>
+                  
+                    <!-- Popup sát dưới title -->
+                    <app-word-set-detail-popup
+                      *ngIf="selectedWordSetId != null && selectedWordSetId === set.word_set_id"
+                      [word_set_id]="selectedWordSetId!"
+                      [showReportButton]="true"
+                      (closed)="onPopupClosed()">
+                    </app-word-set-detail-popup>
+                  </div>
+                  
+                  
+                  <div class="favorite-icon"
+                  [ngClass]="{
+                      'bi': true,
+                      'bi-heart': !isSaved(set.word_set_id!),
+                      'bi-heart-fill': isSaved(set.word_set_id!),
+                      'filled': isSaved(set.word_set_id!)
+                  }"
+                  (click)="toggleFavorite(i)">
+                </div>
+                </div>
+
+                <div class="bottom-row">
+                  <div class="card-info left-info">
+                    <a class="username"
+                          style="cursor: pointer; text-decoration: underline;"
+                          [routerLink]="['/wordset-search']"
+                          [queryParams]="{ q: set.username }">
+                      {{ set.username }}
+                    </a>
+                    <span class="terms">{{ set.termCount }} terms</span>
+                  </div>
+
+                  <div class="dropdown-wrapper" #dropdownWrapper>
+                    <button class="play-button" (click)="toggleDropdown(i, $event)">Game On ▼</button>
+                    <div class="dropdown-menu game-dropdown" *ngIf="activeDropdownIndex === i">
+                      <button [routerLink]="['/wordsearchgame', set.word_set_id!]">Word Search</button>
+                      <button [routerLink]="['/flipcardgame', set.word_set_id!]">Flip Card</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Nút See More -->
+      <div class="see-more">
+        <button *ngIf="visibleCount < filteredVocabSets.length" (click)="showMore()">See more</button>
+      </div>
+
+    </div>
+  </div>
+</div>

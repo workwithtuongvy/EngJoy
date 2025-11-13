@@ -1,0 +1,226 @@
+.vocab-grid {
+    display: grid;
+    gap: 1rem;
+    padding: 1rem;
+    grid-template-columns: repeat(3, 1fr);
+    box-sizing: border-box;
+    position: relative;
+    z-index: 0;
+    overflow: visible !important;
+    isolation: isolate;
+  }
+  
+  /* ===== CARD ===== */
+  .vocab-card {
+    background-color: #2D2F56;
+    border-radius: 15px;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+    z-index: 1;
+  }
+  .vocab-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+  }
+  
+  /* ===== HÌNH ẢNH BỘ TỪ ===== */
+  .card-image {
+    background-color: #1F223D;
+    height: 150px;
+    width: 100%;
+    border-top-left-radius: 15px;
+    border-top-right-radius: 15px;
+    cursor: pointer;
+    transition: opacity 0.2s ease;
+  }
+
+  
+  /* ===== THÂN CARD ===== */
+  .card-main {
+    display: flex;
+    gap: 12px;
+    padding: 1rem;
+    align-items: flex-start;
+  }
+  
+  /* ===== AVATAR + SAVED ===== */
+  .avatar-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 60px;
+  }
+  .avatar {
+    width: 50px;
+    height: 50px;
+    background-color: #888;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: box-shadow 0.2s ease;
+  }
+  .avatar:hover {
+    box-shadow: 0 0 0 2px #ffffff33;
+  }
+  .saved-count {
+    font-size: 14px;
+    color: #ddd;
+    margin-top: 4px;
+    text-align: center;
+  }
+  
+  /* ===== THÔNG TIN BÊN PHẢI ===== */
+  .right-info {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    gap: 8px;
+  }
+  .top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .card-title {
+    font-weight: bold;
+    font-size: 1rem;
+    background-color: rgba(255, 255, 255, 0.15);
+    border-radius: 10px;
+    padding: 2px 10px;
+    color: white;
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .card-title:hover {
+    background-color: rgba(255, 255, 255, 0.25);
+  }
+  
+  /* ===== ICON YÊU THÍCH ===== */
+  .favorite-icon {
+    font-size: 24px;
+    cursor: pointer;
+    color: transparent;
+    -webkit-text-stroke: 1.5px red;
+    transition: all 0.2s ease;
+    position: relative;
+    z-index: 10;
+  }
+  .favorite-icon.filled {
+    color: #ff4d4d;
+    -webkit-text-stroke: 0;
+  }
+  .favorite-icon:active {
+    transform: scale(0.85);
+    transition: transform 0.1s;
+  }
+  
+  /* ===== DÒNG DƯỚI ===== */
+  .bottom-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+  }
+  .card-info {
+    display: flex;
+    flex-direction: column;
+    font-size: 14px;
+    color: #ccc;
+    gap: 2px;
+  }
+  
+  /* ===== NÚT CHƠI GAME ===== */
+  .play-button {
+    background-color: #FF6B61;
+    border: none;
+    border-radius: 30px;
+    padding: 8px 20px;
+    color: white;
+    font-size: 16px;
+    cursor: pointer;
+    min-width: 120px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+  .play-button:hover {
+    background-color: #ff847c;
+  }
+  
+  /* ===== DROPDOWN MENU ===== */
+  .dropdown-container {
+    position: relative;
+    z-index: 1000;
+  }
+  
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .vocab-grid {
+      grid-template-columns: repeat(2, 1fr) !important;
+    }
+  }
+  @media (max-width: 768px) {
+    .avatar {
+      width: 40px;
+      height: 40px;
+    }
+    .card-title {
+      font-size: 0.9rem;
+    }
+    .play-button {
+      font-size: 14px;
+      padding: 5px 12px;
+    }
+  }
+  
+  /* Dropdown overlay */
+  .dropdowns-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 9999;
+    pointer-events: none;
+  }
+  
+  /* Dropdown menu */
+  .game-dropdown {
+    position: absolute;
+    top: calc(100% + 5px);
+    right: 0;
+    background: white;
+    border-radius: 8px;
+    padding: 4px;
+    min-width: 140px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    z-index: 1001;
+  }
+  
+  .game-dropdown button {
+    border: 2px solid #333;
+    background: white;
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+    padding: 8px 12px;
+    cursor: pointer;
+    text-align: center;
+    transition: all 0.2s ease;
+    width: 100%;
+    border-radius: 4px;
+  }
+  
+  .game-dropdown button:hover {
+    background-color: #f0f0f0;
+  }
+  

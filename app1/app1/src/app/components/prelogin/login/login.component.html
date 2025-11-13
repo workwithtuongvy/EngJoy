@@ -1,0 +1,44 @@
+<div class="login-container">
+    <div class="login-box">
+      <h2>Login</h2>
+      <p class="subtitle">please enter your login detail to sign in</p>
+  
+      <div *ngIf="notification.show"
+           [class]="notification.isError ? 'notification error' : 'notification success'"
+           role="alert">
+        {{ notification.message }}
+      </div>
+  
+      <div class="mb-3">
+        <input type="text"
+               class="form-control"
+               [(ngModel)]="username"
+               placeholder="Email Address or Username" />
+      </div>
+  
+      <div class="mb-3 password-wrapper">
+        <input [type]="showPassword ? 'text' : 'password'"
+               class="form-control"
+               [(ngModel)]="password"
+               placeholder="Password" />
+        <span class="toggle-icon" (click)="showPassword = !showPassword">
+          {{ showPassword ? '🙈' : '👁️' }}
+        </span>
+      </div>
+  
+      <div class="login-options">      
+        <a class="forgot" routerLink="/forgotpass">Forgot password?</a>
+      </div>
+  
+      <button class="btn btn-primary w-100" 
+              [disabled]="isSubmitting" 
+              (click)="onLogin()">
+        {{ isSubmitting ? 'Logging in...' : 'Log in' }}
+      </button>
+  
+      <p class="signup-text">
+        Don't have an account? <a routerLink="/register">Sign up</a>
+      </p>
+    </div>
+  </div>
+  

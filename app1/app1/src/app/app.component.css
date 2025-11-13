@@ -1,0 +1,23 @@
+.app-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #0C1033;
+}
+
+.main-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.content-container {
+  height: calc(100vh - 80px); /* Adjust based on header height */
+  background-color: #0C1033;
+}
+
+main {
+  flex: 1;
+  padding: 2rem;
+  position: relative;
+  overflow: hidden;
+}

@@ -1,0 +1,45 @@
+<div class="vocab-grid" [ngStyle]="{'grid-template-columns': 'repeat(' + cardCount + ', 1fr)'}">
+    <div class="vocab-card" *ngFor="let set of cards; let i = index">
+      <div class="card-image"></div>
+  
+      <div class="card-main">
+        <div class="avatar-container">
+          <div class="avatar" [routerLink]="['/wordset', set.word_set_id]"></div>
+          <div class="saved-count">{{ set.savedCount }} saved</div>
+        </div>
+  
+        <div class="right-info">
+          <div class="top-row">
+            <div class="card-title">{{ set.title }}</div>
+            <div class="favorite-icon"
+                [ngClass]="{
+                    'bi': true,
+                    'bi-heart': !isSaved(set.word_set_id!),
+                    'bi-heart-fill': isSaved(set.word_set_id!),
+                    'filled': isSaved(set.word_set_id!)
+                }"
+                (click)="toggleFavorite(i)">
+            </div>
+          </div>
+  
+          <div class="bottom-row">
+            <div class="card-info left-info">
+              <span class="username">{{ set.username }}</span>
+              <span class="terms">{{ set.termCount }} terms</span>
+            </div>
+  
+            <div class="dropdown-container">
+              <button class="play-button" (click)="toggleDropdown(i); $event.stopPropagation()">
+                Game On <i class="bi bi-chevron-down"></i>
+              </button>
+              <div class="game-dropdown" *ngIf="activeDropdownIndex === i">
+                <button (click)="goTo('wordsearchstart', set.word_set_id!)">Word Search</button>
+                <button (click)="goTo('flipcardstart', set.word_set_id!)">Flip Card</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  

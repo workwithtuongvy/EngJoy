@@ -1,0 +1,94 @@
+.register-container {
+    background-color: #0c1033;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+  }
+  
+  .register-box {
+    background-color: #0c1033;
+    color: #fff;
+    width: 100%;
+    max-width: 500px;
+    padding: 2.5rem;
+    border-radius: 16px;
+    box-shadow: 0 0 30px rgba(255, 255, 255, 0.08);
+  }
+  
+  h2 {
+    margin-bottom: 0.5rem;
+    font-size: 30px;
+    font-weight: bold;
+    text-align: center;
+  }
+  
+  .subtitle {
+    font-size: 15px;
+    margin-bottom: 2rem;
+    text-align: center;
+  }
+  
+  .login-text {
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .login-text a {
+    color: #4d6eff;
+    text-decoration: none;
+  }
+  
+  .error-message {
+    color: #f44336;
+    font-size: 13px;
+    min-height: 18px;
+    margin-top: 0.25rem;
+    margin-bottom: 0.5rem;
+    display: block;
+  }
+  
+  .error-message.invisible {
+    color: transparent;
+    pointer-events: none;
+  }
+  
+  .notification {
+    margin-bottom: 1rem;
+    padding: 0.75rem;
+    border-radius: 4px;
+    text-align: center;
+    font-size: 14px;
+  }
+  
+  .notification.success {
+    background-color: #4CAF50;
+    color: white;
+  }
+  
+  .notification.error {
+    background-color: #f44336;
+    color: white;
+  }
+  .toggle-icon {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    font-size: 18px;
+    color: #666;
+  }
+  .toggle-eye {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #555;
+    cursor: pointer;
+  }
+  
+  
+  

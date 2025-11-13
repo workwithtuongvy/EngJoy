@@ -1,0 +1,228 @@
+/* Nền toàn trang */
+body, .dashboard {
+    background-color: #0C1033; /* xanh đậm sang trọng */
+    min-height: 100vh;
+    padding: 2rem;
+  }
+  
+/* ===== DASHBOARD METRICS ===== */
+.metric-card-group {
+	display: grid;
+	grid-template-columns: repeat(4, 1fr);
+	gap: 2rem;
+	margin-top: 1rem;
+}
+
+.metric-card {
+	background: var(--card-background);
+	border-radius: 1rem;
+	padding: 1.25rem;
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	min-height: 120px;
+	box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.metric-card:nth-child(1) {
+	--card-background: #FFE2E5;
+	--icon-background: #FA5A7D;
+}
+.metric-card:nth-child(2) {
+	--card-background: #FFF4DE;
+	--icon-background: #FF947A;
+}
+.metric-card:nth-child(3) {
+	--card-background: #DCFCE7;
+	--icon-background: #3CD856;
+}
+.metric-card:nth-child(4) {
+	--card-background: #F3E8FF;
+	--icon-background: #BF83FF;
+}
+
+.metric-card > div {
+	display: flex;
+	gap: 1rem;
+	align-items: center;
+	margin-bottom: 0.5rem;
+}
+
+.metric-card i {
+	background: var(--icon-background);
+	padding: 0.5rem;
+	border-radius: 50%;
+	color: white;
+	font-size: 1.2rem;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.metric-card h3 {
+	margin: 0;
+	font-weight: bold;
+	color: #000;
+}
+
+.metric-card h6 {
+	margin: 0;
+	color: #333;
+	font-weight: 500;
+	font-size: 0.9rem;
+}
+
+/* ===== REPORT LIST TABLE ===== */
+.report-list {
+	width: 100%;
+	color: white;
+	font-family: 'Inter', sans-serif;
+	margin-top: 2rem;
+    margin-bottom: 2rem;
+    border-radius: 0.5rem;
+    background: #151843;
+}
+
+.report-list thead {
+	background: #454B79;
+    text-align: center;
+}
+
+.report-list thead th {
+	padding: 0.75rem;
+	font-weight: 700;
+	font-size: 1.5rem;
+
+}
+
+.report-list tbody td {
+	background: #151843;
+	padding: 0.75rem;
+	vertical-align: middle;
+	text-align: center;
+	font-size: 1rem;
+	white-space: normal;
+    word-wrap: break-word;
+}
+.report-list th:nth-child(1),
+.report-list td:nth-child(1) {
+  width: 25%;
+}
+
+.report-list th:nth-child(2),
+.report-list td:nth-child(2) {
+  width: 40%;
+}
+.report-list th:nth-child(3),
+.report-list td:nth-child(3) {
+  width: 20%;
+}
+.report-list th:nth-child(4),
+.report-list td:nth-child(4) {
+  width: 15%;
+}
+
+/* ===== STATUS BUTTONS ===== */
+.status-badge {
+	border-radius: 0.4rem;
+	padding: 0.4rem 1rem;
+	font-weight: 1000;
+	color: #fff;
+	display: inline-block;
+	font-size: 0.85 rem;
+	text-align: center !important;
+}
+
+.status-badge.accepted {
+	background-color: #10A957;
+}
+
+.status-badge.rejected {
+	background-color: #EC221F;
+}
+
+.status-badge.pending {
+	background-color: #7C7C7C;
+    text-align: center !important;
+}
+
+/* ===== CUSTOM DROPDOWN (Angular-only) ===== */
+.position-relative {
+	position: relative;
+}
+
+.dropdown-menu.show {
+	position: absolute;
+	background: white;
+	color: black;
+	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+	border-radius: 0.5rem;
+	overflow: hidden;
+	z-index: 1000;
+	width: 100%;
+	top: 100%;
+	left: 0;
+}
+
+.dropdown-menu a {
+	display: block;
+	padding: 0.5rem 1rem;
+	font-weight: 500;
+	text-decoration: none;
+	color: #000;
+}
+
+.dropdown-menu a:hover {
+	background-color: #f0f0f0;
+}
+
+/* ===== Responsive fix & button tweaks ===== */
+.btn-sm {
+	font-size: 0.85rem;
+	font-weight: 500;
+	padding: 0.35rem 0.75rem;
+}
+
+/* ===== LOGOUT BUTTON ===== */
+.btn-outline-light {
+    border: 1px solid #FFF;
+    color: #FFF;
+    background-color: transparent;
+    padding: 0.4rem 1.2rem;
+    border-radius: 0.5rem;
+    transition: all 0.2s ease-in-out;
+  }
+  
+  .btn-outline-light:hover {
+    background-color: #FFF;
+    color: #0C1033;
+  }
+  .card-title-wrapper {
+	position: relative;
+	display: inline-block;
+  }
+  .card-title {
+	font-weight: bold;
+	font-size: 1.15rem !important;
+	color: #fff;
+	white-space: nowrap;
+	background-color: rgba(255, 255, 255, 0.15);
+	border-radius: 10px;
+	padding: 2px 10px;
+	max-width: 200px;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	margin: auto;
+  }
+  /* Hiệu ứng khi hover */
+  .card-title:hover {
+	background-color: rgba(255, 255, 255, 0.3);
+	color: #fff;
+	transform: scale(1.02);
+  }
+  
+  /* Hiệu ứng khi click (tạm thời scale nhẹ) */
+  .card-title:active {
+	transform: scale(0.97);
+	background-color: rgba(255, 255, 255, 0.25);
+  }

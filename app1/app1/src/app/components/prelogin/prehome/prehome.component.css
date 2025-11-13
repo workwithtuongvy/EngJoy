@@ -1,0 +1,61 @@
+html, body {
+margin: 0;
+padding: 0;
+height: 100%;
+overflow-x: hidden;
+}
+
+.full-page {
+display: flex;
+flex-direction: column;
+}
+
+/* Navbar */
+.navbar {
+display: flex;
+justify-content: space-between;
+align-items: center;
+padding: 1rem 2rem;
+background-color: #0c1033;
+position: sticky;
+top: 0;
+z-index: 10;
+}
+
+.logo {
+height: 45px;
+}
+
+.nav-buttons .btn {
+margin-left: 1rem;
+padding: 0.5rem 1.2rem;
+border: none;
+border-radius: 5px;
+font-weight: bold;
+font-size: 1rem;
+cursor: pointer;
+}
+
+.btn-register {
+background-color: white;
+color: #0c1033;
+}
+
+.btn-login {
+background-color: transparent;
+color: white;
+border: 2px solid white;
+}
+
+/* Ảnh nền */
+.image-container {
+width: 100%;
+overflow-x: hidden;
+background-color: #1D234D;
+}
+
+.full-image {
+width: 100vw;       /* ✅ Chiếm toàn bộ chiều ngang màn hình */
+height: auto;       /* ✅ Giữ nguyên tỷ lệ ảnh */
+display: block;
+}

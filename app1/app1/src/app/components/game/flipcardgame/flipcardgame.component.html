@@ -1,0 +1,93 @@
+<!-- Header ở trên cùng -->
+<app-header></app-header>
+
+<!-- Toàn bộ nội dung chia thành 2 cột: sidebar + game -->
+<div class="d-flex">
+  <!-- Sidebar bên trái -->
+  <app-side-bar></app-side-bar>
+
+  <!-- Phần nội dung game bên phải -->
+  <div id="maingame" class="flex-grow-1 p-4" style="background-color: #0C1033;">
+    <div class="game-container mx-auto">
+      <app-headergame
+        [isDarkMode]="isDarkMode"
+        [formattedTime]="formattedTime"
+        [gameIconPath]="'assets/game/icflipcard.png'"
+        (themeToggle)="toggleTheme()"
+        [wordSetTitle]="wordSetTitle"
+        [modeName]="modeName"
+        (restartGame)="restartGame()"
+        (pauseGame)="togglePause()">
+      </app-headergame>
+
+      <!-- Frame chứa các flip card -->
+      <div id="game-frame" class="game-frame rounded-4 mx-auto p-3" [ngClass]="isDarkMode ? 'dark-frame' : 'light-frame'">
+        
+        <div *ngIf="isPaused" class="pause-overlay d-flex justify-content-center align-items-center">
+          <div class="pause-box text-center">
+            ⏸ Trò chơi đang tạm dừng
+            <br />
+            <button class="btn btn-outline-light mt-3 btn-sm" (click)="togglePause()">
+              Tiếp tục
+            </button>
+          </div>
+        </div>
+
+        <div class="d-grid h-100"
+             [ngStyle]="{ 'grid-template-columns': 'repeat(' + columns + ', 1fr)', 'gap': '12px' }">
+             <ng-container *ngFor="let f of flipped; let i = index">
+              <div class="flip-card-wrapper position-relative"
+                   [class.flipped]="f"
+                   [class.matched]="matched[i]"
+                   [class.hidden-card]="hidden[i]"
+                   (click)="toggleFlip(i)">            
+              <div class="flip-inner position-relative w-100 h-100">
+
+                <!-- Mặt trước -->
+                <div class="flip-front flip-face" [ngClass]="isDarkMode ? 'dark-front' : 'light-front'">
+                  <img src="assets/header/logo1.png" alt="EngJoy Logo" style="width: 65%; height: auto;" />
+                </div>
+
+                <!-- Mặt sau -->
+                <div class="flip-back flip-face d-flex justify-content-center align-items-center text-container"
+                     [ngClass]="isDarkMode ? 'dark-back' : 'light-back'">
+                  <span class="text-wrap" style="user-select: none;" appAutoFont [minFontSize]="minFontSize" [maxFontSize]="maxFontSize">
+                    {{ cards[i] }}
+                  </span>
+                </div>
+
+              </div>
+            </div>
+          </ng-container>
+        </div>
+        <!-- Kết quả khi hoàn thành game -->
+        <div *ngIf="isGameOver" class="result-overlay" [ngClass]="isDarkMode ? 'dark-result' : 'light-result'">
+          <div class="result-box shadow-lg">
+            <h2 class="fw-bold text-uppercase mb-3" style="font-size: 2rem">
+              <i class="bi bi-flag-checkered me-2"></i>RESULTS
+            </h2>
+            <p class="fs-5">Game cleared!</p>
+            <p class="fs-5">Time used: {{ elapsedSeconds }} seconds</p>
+            <p class="fw-bold fs-2 text-warning">
+              <i class="bi bi-trophy-fill me-2"></i>Total Score: {{ totalScore }}
+            </p>
+            <p class="fs-5">
+              <i class="bi bi-bar-chart-fill me-2"></i>Your score is at rank <strong style="color: #FFD700; font-size: 1.5rem;">{{ rank }}</strong> in this game!
+            </p>
+      
+            <div class="d-flex justify-content-center gap-4 mt-4">
+              <button class="btn btn-outline-light btn-lg px-4 py-2" (click)="restartGame()">
+                <i class="bi bi-arrow-clockwise me-2" [ngClass]="isDarkMode ? 'bi-light' : 'bi-dark'"></i>Play Again
+              </button>
+              <button class="btn btn-outline-light btn-lg px-4 py-2" routerLink="/home">
+                <i class="bi bi-house-door-fill me-2" [ngClass]="isDarkMode ? 'bi-light' : 'bi-dark'"></i>Back to Home
+              </button>
+            </div>
+          </div>
+        </div>
+
+      
+      </div>
+    </div>
+  </div>
+</div>

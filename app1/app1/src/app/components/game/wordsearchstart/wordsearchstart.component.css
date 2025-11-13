@@ -1,0 +1,91 @@
+:host {
+    display: block;
+    background-color: #0C1033;
+    min-height: 100vh;
+    color: white;
+  }
+/* Khung bao ngoài to gần bằng toàn bộ màn hình */
+.game-mode-frame {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+  
+    background-color: #D1D2D9;
+    border-radius: 20px;
+  
+    width: 100%;
+    height: 100%; /* sẽ hoạt động đúng khi cha có height: 100% */
+    padding: 40px;
+    box-sizing: border-box;
+  }
+  
+  /* Ảnh tiêu đề */
+  .title-image {
+    max-width: 100%;
+    width: 80%;
+    height: auto;
+    display: block;
+    margin: 0 auto 30px auto; /* 🔄 bỏ margin-top, giảm margin-bottom */
+    transform: translateY(-10px); /* 🆕 đẩy lên thêm 10px nếu muốn sát hơn nữa */
+  }
+  
+  /* Nhóm nút */
+  .mode-button-group {
+    display: flex;
+    justify-content: center;
+    gap: 40px;
+    flex-wrap: wrap;
+    width: 100%;
+  }
+  
+  /* Nút chọn chế độ - Tăng kích thước */
+  .mode-button {
+    flex: 1 1 20%;
+    max-width: 280px;       /* 🔼 tăng từ 160px */
+    aspect-ratio: 1 / 1;
+    border-radius: 50%;
+    font-size: 2.7rem;       /* 🔼 tăng từ 1.5rem */
+    font-weight: bold;
+    background-color: white;
+    color: #333;
+    border: none;
+    transition: transform 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 150px;        /* 🔼 tăng từ 100px */
+    margin-top: 80px; 
+    margin-bottom: 80px;
+  }
+  
+  .mode-button:hover {
+    transform: scale(1.08);  /* 🔼 hiệu ứng hover rõ hơn */
+    background-color: #eee;
+  }
+  .mode-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none !important;
+  }
+
+  
+  /* Responsive cho thiết bị nhỏ */
+  @media (max-width: 768px) {
+    .mode-button {
+      flex: 1 1 40%;
+      font-size: 1.4rem;
+    }
+  }
+  
+  @media (max-width: 480px) {
+    .mode-button {
+      flex: 1 1 80%;
+      font-size: 1.2rem;
+    }
+  
+    .game-mode-frame h1 {
+      font-size: 2rem;
+    }
+  }
+  

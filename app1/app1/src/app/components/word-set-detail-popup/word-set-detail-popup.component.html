@@ -1,0 +1,44 @@
+<div class="popup-container" *ngIf="isPopupVisible">
+    <div class="popup-wrapper" #popupRef>
+  
+      <!-- Header -->
+      <div class="popup-header">
+        <span>{{ wordsetDetail?.title || 'Loading...' }}</span>
+        <button *ngIf="showReportButton"
+                class="btn-report"
+                (click)="showReportModal = true">
+          <i class="bi bi-flag-fill"></i> 
+        </button>
+      </div>
+  
+      <!-- Bảng từ vựng -->
+      <div class="popup-body">
+        <table class="definition-table">
+          <thead>
+            <tr>
+              <th>TERM</th>
+              <th>DEFINITION</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngIf="!wordsetDetail?.words?.length">
+              <td colspan="2" class="text-center">Loading words...</td>
+            </tr>
+            <tr *ngFor="let w of wordsetDetail?.words || []">
+              <td>{{ w.term }}</td>
+              <td>{{ w.definition }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  
+    <!-- Report Modal -->
+    <app-report
+      *ngIf="showReportModal && wordsetDetail?.word_set_id"
+      [wordSetId]="wordsetDetail.word_set_id!"
+      [wordSetTitle]="wordsetDetail.title || ''"
+      (closed)="showReportModal = false">
+    </app-report>
+  </div>
+  

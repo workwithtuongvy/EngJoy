@@ -1,0 +1,30 @@
+<div class="game-header d-flex align-items-center px-4 py-3 text-white rounded mb-4">
+    <!-- Bên trái -->
+    <div class="left-area d-flex flex-column justify-content-center align-items-start">
+      <div class="icon-group d-flex gap-2 mb-1">
+        <button class="btn btn-icon"><i class="bi bi-arrow-counterclockwise" (click)="onRestartClick()"></i></button>
+        <button class="btn btn-icon" style="color: orange"><i class="bi bi-pause-fill" (click)="onPauseClick()"></i></button>
+        <button class="btn btn-icon" (click)="onToggleTheme()">
+          <i class="bi" [ngClass]="isDarkMode ? 'bi-moon' : 'bi-sun'"></i>
+        </button>
+        <button class="btn btn-icon"><i class="bi bi-music-note-beamed"></i></button>
+      </div>
+      <div class="game-info text-white text-start mt-2">
+        <div class="game-label">Bộ chữ đã chọn: {{ wordSetTitle }}</div>
+        <div class="game-label">Chế độ chơi: {{ modeName }}</div>
+      </div>
+    </div>
+  
+    <!-- Ở giữa -->
+    <div class="center-area text-center">
+      <img [src]="gameIconPath" alt="FLIP CARDS" class="header-logo-img" />
+    </div>
+  
+    <!-- Bên phải: thời gian -->
+    <div class="right-area">
+      <div class="timer-box">
+        {{ formattedTime }}
+      </div>
+    </div>
+  </div>
+  

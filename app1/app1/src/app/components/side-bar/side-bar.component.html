@@ -1,0 +1,20 @@
+<div class="sidebar">
+  <div class="sidebar-content">
+    <ul class="nav flex-column">
+      <li class="nav-item" *ngFor="let item of menuItems">
+        <a
+          class="nav-link"
+          [routerLink]="item.route"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: true }"
+        >
+          <img [src]="item.icon" class="nav-icon" [alt]="item.label">
+        </a>
+      </li>
+    </ul>
+
+    <div class="footer-text">
+      <em>Have fun with &#64;EngJoy.co</em>
+    </div>
+  </div>
+</div>

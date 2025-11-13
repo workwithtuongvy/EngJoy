@@ -1,0 +1,122 @@
+<!-- Header ở trên cùng -->
+<app-header></app-header>
+
+<!-- Toàn bộ nội dung chia thành 2 cột: sidebar + game -->
+<div class="d-flex">
+  <!-- Sidebar bên trái -->
+  <app-side-bar></app-side-bar>
+
+  <!-- Phần nội dung game bên phải -->
+  <div id="maingame" class="flex-grow-1 p-4" style="background-color: #0C1033;">
+    <div class="game-container mx-auto">
+
+      <!-- Header Game -->
+      <app-headergame
+        [isDarkMode]="isDarkMode"
+        [formattedTime]="formattedTime"
+        (themeToggle)="toggleTheme()"
+        [gameIconPath]="'assets/game/icwordsearch.png'"
+        [wordSetTitle]="wordSetTitle"
+        [modeName]="modeName"
+        (restartGame)="restartGame()"
+        (pauseGame)="togglePause()"
+        >
+      </app-headergame>
+      
+      <!-- Khu vực lưới + mô tả -->
+      <div id="game-frame" class="d-flex gap-3 layout-flex">
+
+        <div *ngIf="isPaused" class="pause-overlay d-flex justify-content-center align-items-center">
+          <div class="pause-box text-center">
+            ⏸ Trò chơi đang tạm dừng
+            <br />
+            <button class="btn btn-outline-light mt-3 btn-sm" (click)="togglePause()">
+              Tiếp tục
+            </button>
+          </div>
+        </div>        
+        
+        <!-- Mô tả bên trái -->
+        <div class="description-frame p-3 rounded text-white"
+            [ngClass]="isDarkMode ? 'dark-description-frame' : 'light-description-frame'">
+          <h5 class="text-center" style="font-size: 2rem; font-weight: bold;">Definition</h5>
+
+          <div class="d-flex flex-column gap-2 mt-3">
+            <div class="d-flex align-items-center justify-content-between" *ngFor="let def of definitions; let i = index">
+
+              <!-- Nút bên trái: hiển thị term hoặc definition -->
+              <button class="btn btn-outline-light btn-sm flex-grow-1 me-2 text-start"
+                (click)="toggleDefinition(i)"
+                [class.found]="isTermFound(i)">
+                <span
+                  appAutoFont
+                  [minFontSize]="minFontSize"
+                  [maxFontSize]="maxFontSize"
+                  [ngClass]="{ 'text-decoration-line-through': isTermFound(i) }"
+                >
+                  {{ showTermInstead[i] ? rawTerms[i].toUpperCase() : def }}
+                </span>
+              </button>
+
+              <!-- Nút 👁 hiện đáp án -->
+              <button class="btn btn-outline-warning btn-sm"
+                [disabled]="showAnswers[i]"
+                (click)="toggleShowAnswer(i)">
+                <i class="bi bi-eye"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+
+        <!-- Vùng chứa lưới -->
+        <div class="grid-area position-relative" [ngClass]="isDarkMode ? 'dark-grid-area' : 'light-grid-area'">
+          <div class="grid-wrapper position-relative">
+            <!-- ✅ Lưới chữ chỉ hiện khi chưa kết thúc game -->
+            <div class="letter-grid" *ngIf="!isGameOver">
+              <div class="row-flex" *ngFor="let row of grid; let r = index">
+                <div class="cell-flex"
+                    *ngFor="let cell of row; let c = index"
+                    [class.selected]="isCellSelected(r, c)"
+                    [class.found-cell]="isCellInFoundTerm(r, c)"
+                    (mousedown)="startSelection(r, c)"
+                    (mouseover)="continueSelection(r, c)">
+                  {{ cell }}
+                </div>
+              </div>
+            </div>
+        
+            <!-- ✅ Kết quả hiển thị ở giữa khung lưới -->
+            <div *ngIf="isGameOver" class="result-overlay" [ngClass]="isDarkMode ? 'dark-result' : 'light-result'">
+              <div class="result-box">
+                <h2 class="fw-bold text-uppercase mb-3" style="font-size: 2rem">
+                  <i class="bi bi-flag-checkered me-2"></i>RESULTS
+                </h2>
+                <p class="fs-5">Game cleared!</p>
+                <p class="fs-5">Time used: {{ elapsedSeconds }} seconds</p>
+                <p class="fw-bold fs-2 text-warning">
+                  <i class="bi bi-trophy-fill me-2"></i>Total Score: {{ totalScore }}
+                </p>
+                <p class="fs-5">
+                  <i class="bi bi-bar-chart-fill me-2"></i>Your score is at rank
+                  <strong style="color: #FFD700; font-size: 1.5rem;">{{ rank }}</strong> in this game!
+                </p>
+                <div class="d-flex justify-content-center gap-4 mt-4">
+                  <button class="btn btn-outline-light btn-lg px-4 py-2" (click)="restartGame()">
+                    <i class="bi bi-arrow-clockwise me-2" [ngClass]="isDarkMode ? 'bi-light' : 'bi-dark'"></i>Play Again
+                  </button>
+                  <button class="btn btn-outline-light btn-lg px-4 py-2" routerLink="/home">
+                    <i class="bi bi-house-door-fill me-2" [ngClass]="isDarkMode ? 'bi-light' : 'bi-dark'"></i>Back to Home
+                  </button>
+                </div>
+              </div>
+            </div>
+
+          </div>
+        </div>        
+      </div>
+
+    </div>
+  </div>
+</div>

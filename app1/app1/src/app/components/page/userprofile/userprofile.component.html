@@ -1,0 +1,144 @@
+<app-header></app-header>
+
+<div class="d-flex">
+  <app-side-bar></app-side-bar>
+
+  <div class="profile-container">
+    <div class="background-banner">
+      <div class="avatar-section">
+        <div class="avatar-circle"></div>
+        <div class="username-group">
+          <h2 class="username-text">{{ userData.full_name }}</h2>
+        </div>
+      </div>
+      <button class="edit-button" (click)="Editprofile()">✏️ Edit my profile</button>
+    </div>
+
+    <!-- 🔔 Thông báo -->
+    <div
+      class="notification"
+      *ngIf="notification.show"
+      [ngClass]="{ 'error': notification.isError, 'success': !notification.isError }"
+    >
+      {{ notification.message }}
+    </div>
+
+    <form class="profile-form" (ngSubmit)="saveProfile()">
+      <!-- Username + Name -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Username</label>
+          <input
+            type="text"
+            [(ngModel)]="tempUserData.username"
+            name="username"
+            [disabled]="!Editable"
+            (blur)="validateUsername()"
+          />
+          <span class="error-message" *ngIf="errorUsername">{{ errorUsername }}</span>
+        </div>
+
+        <div class="form-group">
+          <label>Name</label>
+          <input
+            type="text"
+            [(ngModel)]="tempUserData.full_name"
+            name="full_name"
+            [disabled]="!Editable"
+          />
+        </div>
+      </div>
+
+      <!-- Birthday + Email -->
+      <div class="form-row">
+        <div class="form-group">
+          <label>Birthday</label>
+          <input
+            type="date"
+            [(ngModel)]="tempUserData.birthdate"
+            name="birthdate"
+            [disabled]="!Editable"
+          />
+        </div>
+
+        <div class="form-group">
+          <label>Email</label>
+          <input
+            type="email"
+            [(ngModel)]="tempUserData.email"
+            name="email"
+            [disabled]="!Editable"
+            (blur)="validateEmail()"
+          />
+          <span class="error-message" *ngIf="errorEmail">{{ errorEmail }}</span>
+        </div>
+      </div>
+
+      <!-- Description -->
+      <div class="form-group full-width">
+        <label>Description</label>
+        <textarea
+          rows="3"
+          [(ngModel)]="tempUserData.description"
+          name="description"
+          [disabled]="!Editable"
+        ></textarea>
+      </div>
+
+      <!-- Password (ẩn) -->
+      <div class="form-group full-width" *ngIf="!showChangePassword">
+        <label>Password</label>
+        <div class="password-wrapper">
+          <input type="password" value="********" name="password" disabled />
+          <span
+            class="lock-icon"
+            (click)="ChangePassword()"
+            [style.pointer-events]="Editable ? 'auto' : 'none'"
+          >🔒</span>
+        </div>
+      </div>
+
+      <!-- Đổi mật khẩu -->
+      <div *ngIf="showChangePassword">
+        <div class="form-group full-width">
+          <label>Old Password</label>
+          <input
+            type="password"
+            [(ngModel)]="oldPassword"
+            name="oldPassword"
+            (blur)="validateOldPassword()"
+          />
+          <span class="error-message" *ngIf="errorOldPassword">{{ errorOldPassword }}</span>
+        </div>
+
+        <div class="form-group full-width">
+          <label>New Password</label>
+          <input
+            type="password"
+            [(ngModel)]="newPassword"
+            name="newPassword"
+            (blur)="validateNewPassword()"
+          />
+          <span class="error-message" *ngIf="errorPassword">{{ errorPassword }}</span>
+        </div>
+
+        <div class="form-group full-width">
+          <label>Confirm New Password</label>
+          <input
+            type="password"
+            [(ngModel)]="rePassword"
+            name="rePassword"
+            (blur)="validateConfirmPassword()"
+          />
+          <span class="error-message" *ngIf="errorConfirmPassword">{{ errorConfirmPassword }}</span>
+        </div>
+      </div>
+
+      <!-- Nút Save/Cancel -->
+      <div class="button-group" *ngIf="Editable || showChangePassword">
+        <button type="button" class="btn-cancel" (click)="cancelEdit()">Cancel</button>
+        <button type="submit" class="btn-save">Save</button>
+      </div>
+    </form>
+  </div>
+</div>

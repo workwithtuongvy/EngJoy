@@ -1,0 +1,70 @@
+/* footer base */
+#footer-content {
+	background: #454B79;
+	color: #FFF;
+	width: 100%;
+	padding-left: 15px;
+	padding-right: 15px;
+}
+
+/* decrease text opacity */
+#footer-content p,
+#footer-content a {
+	opacity: 70%;
+}
+
+/* custom padding & margin */
+.mt-8 {
+	margin-top: 2rem;
+}
+
+.mb-8 {
+	margin-bottom: 2rem;
+}
+
+.mt-16 {
+	margin-top: 4rem;
+}
+
+.pt-8 {
+	padding-top: 2rem;
+}
+
+.pl-8 {
+	padding-left: 6rem;
+}
+
+/* makes logo above the text */
+.logo {
+	z-index: 1;
+	width: 300px;   /* Tăng từ mặc định lên */
+    height: auto;   /* Giữ tỉ lệ gốc */
+    display: block;
+    margin: 30px auto 30px auto; /* Căn giữa và cách các phần dưới */
+}
+
+/* make "a", "p" elements have "\n" (line break) break correctly */
+.url-group p,
+.url-group a {
+	white-space: pre-line;
+}
+
+/* disable margin on "p" elements */
+.url-group p {
+	margin: 0;
+}
+
+/* change url color */
+.url-group a {
+	color: #FFF;
+}
+
+/* change icon color */
+.url-group .bi {
+	color: #0081FE;
+}
+
+hr {
+	border-top: 1px solid rgba(255, 255, 255, 0.3);
+	margin: 1rem 4rem;
+}
