@@ -1,7 +1,7 @@
 # 🚀 EngJoy — Gamified English Vocabulary Learning Web App
 
 ## 📘 Overview
-
+![image alt](https://github.com/workwithtuongvy/EngJoy/blob/b07059590646f097f80903bae046a00e3cb02d0a/landing_page.png)
 > **EngJoy** is a modern, interactive English vocabulary learning web application built with a **gamified approach** to make studying more engaging, enjoyable, and effective.
 
 Instead of memorizing vocabulary traditionally, EngJoy transforms learning into a fun experience through two interactive mini-games:
